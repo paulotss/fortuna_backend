@@ -3,14 +3,15 @@ import type User from '../domains/user/User'
 import type IClient from '../interfaces/IClient'
 import CustomError from '../utils/CustomError'
 import UserService from './UserService'
-import { PrismaClient } from '@prisma/client'
+import { type PrismaClient } from '@prisma/client'
+import prisma from '../utils/prisma'
 
 class ClientService extends UserService {
   private readonly prisma: PrismaClient
 
   constructor () {
     super()
-    this.prisma = new PrismaClient()
+    this.prisma = prisma
   }
 
   protected createDomain (client: IClient): User {
