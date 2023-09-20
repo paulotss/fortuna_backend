@@ -17,17 +17,17 @@ model Cashier {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  code       String    @db.VarChar(45)
-  password   String    @db.VarChar(45)
-  cell_phone String    @db.VarChar(45)
-  email      String    @db.VarChar(45)
-  branch     String    @db.VarChar(45)
-  type       String    @db.VarChar(45)
-  Client     Client[]
-  Manager    Manager[]
-  Seller     Seller[]
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  code      String    @db.VarChar(45)
+  password  String    @db.VarChar(45)
+  cellPhone String    @db.VarChar(45)
+  email     String    @db.VarChar(45)
+  branch    String    @db.VarChar(45)
+  type      String    @db.VarChar(45)
+  Client    Client[]
+  Manager   Manager[]
+  Seller    Seller[]
 }
 
 model Product {
@@ -35,30 +35,33 @@ model Product {
   title             String              @db.VarChar(255)
   price             Decimal             @db.Decimal(10, 2)
   amount            Int
-  bar_code          String              @db.VarChar(45)
+  barCode           String              @db.VarChar(45)
   InvoiceHasProduct InvoiceHasProduct[]
 }
 
 model Client {
-  id      Int       @id @default(autoincrement())
-  cpf     String    @db.VarChar(11)
-  balance Decimal   @db.Decimal(10, 2)
-  user    User      @relation(fields: [userId], references: [id])
-  userId  Int
-  Invoice Invoice[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  cpf       String    @db.VarChar(11)
+  balance   Decimal   @db.Decimal(10, 2)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  Invoice   Invoice[]
 }
 
 model Manager {
-  id     Int  @id @default(autoincrement())
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
 
 model Seller {
-  id      Int       @id @default(autoincrement())
-  user    User      @relation(fields: [userId], references: [id])
-  userId  Int
-  Invoice Invoice[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  Invoice   Invoice[]
 }
 
 model Invoice {

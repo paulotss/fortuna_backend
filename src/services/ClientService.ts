@@ -31,7 +31,7 @@ class ClientService extends UserService {
       name: clientModel.user.name,
       code: clientModel.user.code,
       password: clientModel.user.password,
-      cellPhone: clientModel.user.cell_phone,
+      cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
       branch: clientModel.user.branch,
       type: clientModel.user.type,
