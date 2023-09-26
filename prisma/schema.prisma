@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Cashier {
+  id      Int       @id @default(autoincrement())
+  title   String    @db.VarChar(255)
+  Invoice Invoice[]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(255)
+  code      String    @db.VarChar(45)
+  password  String    @db.VarChar(45)
+  cellPhone String    @db.VarChar(45)
+  email     String    @db.VarChar(45)
+  branch    String    @db.VarChar(45)
+  type      String    @db.VarChar(45)
+  Client    Client[]
+  Manager   Manager[]
+  Seller    Seller[]
+}
+
+model Product {
+  id                Int                 @id @default(autoincrement())
+  title             String              @db.VarChar(255)
+  price             Decimal             @db.Decimal(10, 2)
+  amount            Int
+  barCode           String              @db.VarChar(45)
+  InvoiceHasProduct InvoiceHasProduct[]
+}
+
+model Client {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  cpf       String    @db.VarChar(11)
+  balance   Decimal   @db.Decimal(10, 2)
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  Invoice   Invoice[]
+}
+
+model Manager {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Seller {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+  Invoice   Invoice[]
+}
+
+model Invoice {
+  id                Int                 @id @default(autoincrement())
+  value             Decimal             @db.Decimal(10, 2)
+  sale_date         DateTime
+  cashier           Cashier             @relation(fields: [cashierId], references: [id])
+  cashierId         Int
+  seller            Seller              @relation(fields: [sellerId], references: [id])
+  sellerId          Int
+  client            Client              @relation(fields: [clientId], references: [id])
+  clientId          Int
+  InvoiceHasProduct InvoiceHasProduct[]
+}
+
+model InvoiceHasProduct {
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@id([invoiceId, productId])
+}
