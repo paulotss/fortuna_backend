@@ -23,6 +23,16 @@ class SellerController {
       this.next(error)
     }
   }
+
+  public async verify (): Promise<void> {
+    try {
+      const { token } = this.request.body
+      const payload = await this.service.verify(token)
+      this.response.status(200).json(payload)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default SellerController
