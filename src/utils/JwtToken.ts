@@ -20,10 +20,18 @@ class JwtToken {
     })
   }
 
-  public getPayload (token: string): JwtPayload {
-    const result = jwt.verify(token, this.privateKey)
-    if (typeof result === 'string') throw new Error()
-    return result
+  public async getPayload (token: string): Promise<JwtPayload> {
+    const privateKey = this.privateKey
+    const promise: Promise<JwtPayload> =
+      new Promise<JwtPayload>(function (resolve, reject) {
+        const result = jwt.verify(token, privateKey)
+        if (typeof result === 'string' || result === undefined) {
+          reject(new Error('not JwtPayload'))
+        } else {
+          resolve(result)
+        }
+      })
+    return await promise
   }
 }
 
