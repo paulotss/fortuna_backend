@@ -31,12 +31,12 @@ model User {
 }
 
 model Product {
-  id                Int                 @id @default(autoincrement())
-  title             String              @db.VarChar(255)
-  price             Decimal             @db.Decimal(10, 2)
-  amount            Int
-  barCode           String              @db.VarChar(45)
-  InvoiceHasProduct InvoiceHasProduct[]
+  id       Int       @id @default(autoincrement())
+  title    String    @db.VarChar(255)
+  price    Decimal   @db.Decimal(10, 2)
+  amount   Int
+  barCode  String    @db.VarChar(45)
+  invoices Invoice[]
 }
 
 model Client {
@@ -65,23 +65,14 @@ model Seller {
 }
 
 model Invoice {
-  id                Int                 @id @default(autoincrement())
-  value             Decimal             @db.Decimal(10, 2)
-  sale_date         DateTime
-  cashier           Cashier             @relation(fields: [cashierId], references: [id])
-  cashierId         Int
-  seller            Seller              @relation(fields: [sellerId], references: [id])
-  sellerId          Int
-  client            Client              @relation(fields: [clientId], references: [id])
-  clientId          Int
-  InvoiceHasProduct InvoiceHasProduct[]
-}
-
-model InvoiceHasProduct {
-  invoice   Invoice @relation(fields: [invoiceId], references: [id])
-  invoiceId Int
-  product   Product @relation(fields: [productId], references: [id])
-  productId Int
-
-  @@id([invoiceId, productId])
+  id        Int       @id @default(autoincrement())
+  value     Decimal   @db.Decimal(10, 2)
+  saleDate  DateTime
+  cashier   Cashier   @relation(fields: [cashierId], references: [id])
+  cashierId Int
+  seller    Seller    @relation(fields: [sellerId], references: [id])
+  sellerId  Int
+  client    Client    @relation(fields: [clientId], references: [id])
+  clientId  Int
+  products  Product[]
 }
