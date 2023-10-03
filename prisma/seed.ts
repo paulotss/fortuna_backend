@@ -17,11 +17,59 @@ async function main (): Promise<void> {
     }
   })
 
+  const user2 = await prisma.user.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      name: 'Raquel Álvares',
+      code: '002',
+      password: '123456',
+      email: 'raquel.alvares@gmail.com',
+      branch: 'Taguatinga',
+      type: 'DD',
+      cellPhone: '61981285134'
+    }
+  })
+
+  const user3 = await prisma.user.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Marco Aurélio',
+      code: '003',
+      password: '123456',
+      email: 'marco.tf2@gmail.com',
+      branch: 'Taguatinga',
+      type: 'CS',
+      cellPhone: '61123456789'
+    }
+  })
+
   const seller1 = await prisma.seller.upsert({
     where: { id: 1 },
     update: {},
     create: {
       userId: 1
+    }
+  })
+
+  const client1 = await prisma.client.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      userId: 2,
+      cpf: '12345678910',
+      balance: 50
+    }
+  })
+
+  const client2 = await prisma.client.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      userId: 3,
+      cpf: '12345678910',
+      balance: 100
     }
   })
 
@@ -66,7 +114,18 @@ async function main (): Promise<void> {
     }
   })
 
-  console.log({ user1, seller1, cashier1, product1, product2, product3 })
+  console.log({
+    user1,
+    user2,
+    user3,
+    seller1,
+    client1,
+    client2,
+    cashier1,
+    product1,
+    product2,
+    product3
+  })
 }
 
 main().then(async () => {
