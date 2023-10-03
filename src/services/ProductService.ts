@@ -16,7 +16,6 @@ class ProductService {
 
   public async getAll (): Promise<Product[]> {
     const productsModels: IProduct[] = await prisma.product.findMany()
-    // let products: Product[]
     const products: Product[] = productsModels.map((product) => {
       return this.createDomain(product)
     })
