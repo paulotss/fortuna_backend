@@ -23,8 +23,26 @@ class InvoiceService {
         cashierId: invoice.cashierId,
         sellerId: invoice.sellerId,
         clientId: invoice.clientId,
-        products: { connect: invoice.productsId.map((id) => ({ id })) }
+        products: {
+          create: invoice.products.map((product) => ({
+            value: product.value,
+            amount: product.amount,
+            product: {
+              connect: { id: product.id }
+            }
+          }))
+        }
       }
+    })
+    for (let i = 0; i < invoice.products.length; i += 1) {
+      await this.prisma.product.update({
+        where: { id: invoice.products[i].id },
+        data: { amount: { decrement: invoice.products[i].amount } }
+      })
+    }
+    await this.prisma.client.update({
+      where: { id: invoice.clientId },
+      data: { balance: { decrement: invoice.value } }
     })
     const newInvoice = this.createDomain({
       id: invoiceModel.id,

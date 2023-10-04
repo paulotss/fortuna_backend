@@ -13,7 +13,7 @@ datasource db {
 model Cashier {
   id      Int       @id @default(autoincrement())
   title   String    @db.VarChar(255)
-  Invoice Invoice[]
+  invoice Invoice[]
 }
 
 model User {
@@ -31,12 +31,12 @@ model User {
 }
 
 model Product {
-  id       Int       @id @default(autoincrement())
-  title    String    @db.VarChar(255)
-  price    Decimal   @db.Decimal(10, 2)
-  amount   Int
-  barCode  String    @db.VarChar(45)
-  invoices Invoice[]
+  id      Int                @id @default(autoincrement())
+  title   String             @db.VarChar(255)
+  price   Decimal            @db.Decimal(10, 2)
+  amount  Int
+  barCode String             @db.VarChar(45)
+  invoice InvoiceToProduct[]
 }
 
 model Client {
@@ -46,7 +46,7 @@ model Client {
   balance   Decimal   @db.Decimal(10, 2)
   user      User      @relation(fields: [userId], references: [id])
   userId    Int
-  Invoice   Invoice[]
+  invoice   Invoice[]
 }
 
 model Manager {
@@ -61,18 +61,29 @@ model Seller {
   createdAt DateTime  @default(now())
   user      User      @relation(fields: [userId], references: [id])
   userId    Int
-  Invoice   Invoice[]
+  invoice   Invoice[]
 }
 
 model Invoice {
-  id        Int       @id @default(autoincrement())
-  value     Decimal   @db.Decimal(10, 2)
+  id        Int                @id @default(autoincrement())
+  value     Decimal            @db.Decimal(10, 2)
   saleDate  DateTime
-  cashier   Cashier   @relation(fields: [cashierId], references: [id])
+  cashier   Cashier            @relation(fields: [cashierId], references: [id])
   cashierId Int
-  seller    Seller    @relation(fields: [sellerId], references: [id])
+  seller    Seller             @relation(fields: [sellerId], references: [id])
   sellerId  Int
-  client    Client    @relation(fields: [clientId], references: [id])
+  client    Client             @relation(fields: [clientId], references: [id])
   clientId  Int
-  products  Product[]
+  products  InvoiceToProduct[]
+}
+
+model InvoiceToProduct {
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoiceId Int
+  value     Decimal @db.Decimal(10, 2)
+  amount    Int
+
+  @@id([productId, invoiceId])
 }

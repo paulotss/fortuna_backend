@@ -9,5 +9,9 @@ export interface IInvoiceCreateRequest extends IInvoice {
   cashierId: number
   sellerId: number
   clientId: number
-  productsId: number[]
+  products: Array<{
+    id: number
+    value: number
+    amount: number
+  }>
 }
