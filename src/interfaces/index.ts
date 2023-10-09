@@ -15,3 +15,14 @@ export interface IInvoiceCreateRequest extends IInvoice {
     amount: number
   }>
 }
+
+export interface IInvoiceReportCashierRequest {
+  cashierId: number
+  startDate: Date | string
+  endDate: Date | string
+}
+
+export interface IInvoiveReportCashierResponse {
+  invoice: Invoice
+  client: Client
+}

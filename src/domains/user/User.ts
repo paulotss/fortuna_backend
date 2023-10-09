@@ -3,8 +3,8 @@ import type IUser from '../../interfaces/IUser'
 class User {
   private id: number | undefined
   private name: string
-  private code: string
-  private password: string
+  private code?: string
+  private password?: string
   private cellPhone: string
   private email: string
   private branch: string
@@ -37,7 +37,7 @@ class User {
     this.name = name
   }
 
-  public getCode (): string {
+  public getCode (): string | undefined {
     return this.code
   }
 
@@ -45,7 +45,7 @@ class User {
     this.code = code
   }
 
-  public getPassword (): string {
+  public getPassword (): string | undefined {
     return this.password
   }
 

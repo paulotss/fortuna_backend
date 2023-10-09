@@ -9,4 +9,8 @@ router.post('/invoice', (req, res, next) =>
   new InvoiceController(req, res, next).createOne()
 )
 
+router.get('/invoice/cashier/:cashierId', (req, res, next) =>
+  new InvoiceController(req, res, next).getByCashier()
+)
+
 export default router

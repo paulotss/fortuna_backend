@@ -1,8 +1,11 @@
 import Invoice from '../domains/Invoice'
-import { type IInvoiceCreateRequest } from '../interfaces'
+import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest } from '../interfaces'
 import type IInvoice from '../interfaces/IInvoice'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
+import Client from '../domains/user/Client'
+import Seller from '../domains/user/Seller'
+import Cashier from '../domains/Cashier'
 
 class InvoiceService {
   private readonly prisma: PrismaClient
@@ -50,6 +53,49 @@ class InvoiceService {
       saleDate: invoiceModel.saleDate
     })
     return newInvoice
+  }
+
+  public async getByCashier (request: IInvoiceReportCashierRequest): Promise<Invoice[]> {
+    const invoicesModels = await this.prisma.invoice.findMany({
+      where: {
+        cashier: { id: request.cashierId },
+        saleDate: { gte: request.startDate, lte: request.endDate }
+      },
+      include: {
+        client: { include: { user: true } },
+        seller: { include: { user: true } },
+        cashier: true
+      }
+    })
+    const invoices = invoicesModels.map((invoice) => this.createDomain({
+      id: invoice.id,
+      saleDate: invoice.saleDate,
+      value: invoice.value,
+      client: new Client({
+        id: invoice.client.id,
+        name: invoice.client.user.name,
+        cellPhone: invoice.client.user.cellPhone,
+        email: invoice.client.user.email,
+        branch: invoice.client.user.branch,
+        type: invoice.client.user.type,
+        cpf: invoice.client.cpf,
+        balance: invoice.client.balance
+      }),
+      seller: new Seller({
+        id: invoice.seller.id,
+        name: invoice.seller.user.name,
+        cellPhone: invoice.seller.user.cellPhone,
+        email: invoice.seller.user.email,
+        branch: invoice.seller.user.branch,
+        type: invoice.seller.user.type,
+        createdAt: invoice.seller.createdAt
+      }),
+      cashier: new Cashier({
+        id: invoice.cashier.id,
+        title: invoice.cashier.title
+      })
+    }))
+    return invoices
   }
 }
 
