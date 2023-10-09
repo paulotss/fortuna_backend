@@ -14,6 +14,15 @@ class CashierController {
     this.service = new CashierService()
   }
 
+  public async getAll (): Promise<void> {
+    try {
+      const result = await this.service.getAll()
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
   public async getById (): Promise<void> {
     try {
       const { id } = this.request.params

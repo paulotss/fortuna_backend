@@ -5,6 +5,10 @@ import CashierController from '../controllers/CashierController'
 
 const router = Router()
 
+router.get('/cashier', (req, res, next) =>
+  new CashierController(req, res, next).getAll()
+)
+
 router.get('/cashier/:id', (req, res, next) =>
   new CashierController(req, res, next).getById()
 )

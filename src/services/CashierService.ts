@@ -15,6 +15,12 @@ class CashierService {
     return new Cashier(cashier)
   }
 
+  public async getAll (): Promise<Cashier[]> {
+    const cashiersModels = await this.prisma.cashier.findMany()
+    const cashiers = cashiersModels.map((cashier) => this.createDomain(cashier))
+    return cashiers
+  }
+
   public async getById (id: number): Promise<Cashier> {
     const cashier = await this.prisma.cashier.findUnique({
       where: { id }
