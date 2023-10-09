@@ -1,7 +1,7 @@
 import type IUser from './IUser'
 
 interface ISeller extends IUser {
-  createdAt: string
+  createdAt: Date
 }
 
 export default ISeller

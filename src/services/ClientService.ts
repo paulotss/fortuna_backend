@@ -41,6 +41,27 @@ class ClientService extends UserService {
     await this.prisma.$disconnect()
     return client
   }
+
+  public async getAll (): Promise<User[]> {
+    const clientsModels = await this.prisma.client.findMany({
+      include: { user: true }
+    })
+    const clients: User[] = clientsModels.map((client) => {
+      return this.createDomain({
+        id: client.id,
+        name: client.user.name,
+        code: client.user.code,
+        password: client.user.password,
+        cellPhone: client.user.cellPhone,
+        email: client.user.email,
+        branch: client.user.branch,
+        type: client.user.type,
+        cpf: client.cpf,
+        balance: client.balance
+      })
+    })
+    return clients
+  }
 }
 
 export default ClientService

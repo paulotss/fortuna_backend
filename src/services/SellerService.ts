@@ -23,7 +23,7 @@ class SellerService extends UserService {
   }
 
   public async login (payload: RequestLoginType): Promise<string> {
-    const result = await this.prisma.seller.findFirst({
+    const seller = await this.prisma.seller.findFirst({
       where: {
         user: {
           code: payload.code,
@@ -31,8 +31,8 @@ class SellerService extends UserService {
         }
       }
     })
-    if (result === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { code: payload.code, accessLevel: this.accessLevel }
+    if (seller === null) throw new CustomError('Forbidden', 403)
+    const jwtPayload: JwtPayloadType = { id: seller.id, accessLevel: this.accessLevel }
     const jwt = new JwtToken()
     const token = jwt.generateToken(jwtPayload)
     return token

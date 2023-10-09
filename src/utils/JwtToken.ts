@@ -2,7 +2,7 @@ import jwt, { type JwtPayload } from 'jsonwebtoken'
 import CustomError from './CustomError'
 
 export interface JwtPayloadType {
-  code: string
+  id: number
   accessLevel: number
 }
 

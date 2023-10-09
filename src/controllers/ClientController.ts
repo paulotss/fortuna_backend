@@ -24,6 +24,15 @@ class ClientController {
       this.next(error)
     }
   }
+
+  public async getAll () {
+    try {
+      const clients = await this.service.getAll()
+      this.response.status(200).json(clients)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default ClientController
