@@ -6,6 +6,7 @@ import prisma from '../utils/prisma'
 import Client from '../domains/user/Client'
 import Seller from '../domains/user/Seller'
 import Cashier from '../domains/Cashier'
+import CustomError from '../utils/CustomError'
 
 class InvoiceService {
   private readonly prisma: PrismaClient
@@ -96,6 +97,47 @@ class InvoiceService {
       })
     }))
     return invoices
+  }
+
+  public async getById (invoiceId: number): Promise<Invoice> {
+    const invoiceModel = await this.prisma.invoice.findUnique({
+      where: { id: invoiceId },
+      include: {
+        client: { include: { user: true } },
+        seller: { include: { user: true } },
+        cashier: true
+      }
+    })
+    if (invoiceModel === null) throw new CustomError('Not found', 404)
+    const invoice = this.createDomain({
+      id: invoiceModel.id,
+      saleDate: invoiceModel.saleDate,
+      value: invoiceModel.value,
+      client: new Client({
+        id: invoiceModel.client.id,
+        name: invoiceModel.client.user.name,
+        cellPhone: invoiceModel.client.user.cellPhone,
+        email: invoiceModel.client.user.email,
+        branch: invoiceModel.client.user.branch,
+        type: invoiceModel.client.user.type,
+        cpf: invoiceModel.client.cpf,
+        balance: invoiceModel.client.balance
+      }),
+      seller: new Seller({
+        id: invoiceModel.seller.id,
+        name: invoiceModel.seller.user.name,
+        cellPhone: invoiceModel.seller.user.cellPhone,
+        email: invoiceModel.seller.user.email,
+        branch: invoiceModel.seller.user.branch,
+        type: invoiceModel.seller.user.type,
+        createdAt: invoiceModel.seller.createdAt
+      }),
+      cashier: new Cashier({
+        id: invoiceModel.cashier.id,
+        title: invoiceModel.cashier.title
+      })
+    })
+    return invoice
   }
 }
 
