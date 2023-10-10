@@ -58,7 +58,7 @@ class InvoiceService {
   public async getByCashier (request: IInvoiceReportCashierRequest): Promise<Invoice[]> {
     const invoicesModels = await this.prisma.invoice.findMany({
       where: {
-        cashier: { id: request.cashierId },
+        cashier: request.cashierId !== 0 ? { id: request.cashierId } : { id: { gt: 0 } },
         saleDate: { gte: request.startDate, lte: request.endDate }
       },
       include: {

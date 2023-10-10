@@ -21,8 +21,3 @@ export interface IInvoiceReportCashierRequest {
   startDate: Date | string
   endDate: Date | string
 }
-
-export interface IInvoiveReportCashierResponse {
-  invoice: Invoice
-  client: Client
-}
