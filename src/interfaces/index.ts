@@ -22,7 +22,8 @@ export interface IInvoiceReportCashierRequest {
   endDate: Date | string
 }
 
-export interface IInvoiveReportCashierResponse {
-  invoice: Invoice
-  client: Client
+export interface IIClientUniqueInputUpdate {
+  clientId: number
+  input: string
+  value: string | number
 }

@@ -13,4 +13,8 @@ router.get('/clients', (req, res, next) =>
   new ClientController(req, res, next).getAll()
 )
 
+router.put('/client', (req, res, next) =>
+  new ClientController(req, res, next).updateUniqueInput()
+)
+
 export default router
