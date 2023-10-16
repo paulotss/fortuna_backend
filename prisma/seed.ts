@@ -3,6 +3,23 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main (): Promise<void> {
+  const branch1 = await prisma.branch.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      title: 'Taguatinga'
+    }
+  })
+
+  const function1 = await prisma.function.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      title: 'Força Viva',
+      acronym: 'FFVV'
+    }
+  })
+
   const user1 = await prisma.user.upsert({
     where: { id: 1 },
     update: {},
@@ -11,9 +28,9 @@ async function main (): Promise<void> {
       code: '001',
       password: '123456',
       email: 'paulo.oinab@gmail.com',
-      branch: 'Taguatinga',
-      type: 'CC',
-      cellPhone: '61988585218'
+      cellPhone: '61988585218',
+      branchId: 1,
+      functionId: 1
     }
   })
 
@@ -25,9 +42,9 @@ async function main (): Promise<void> {
       code: '002',
       password: '123456',
       email: 'raquel.alvares@gmail.com',
-      branch: 'Taguatinga',
-      type: 'DD',
-      cellPhone: '61981285134'
+      cellPhone: '61981285134',
+      branchId: 1,
+      functionId: 1
     }
   })
 
@@ -39,9 +56,9 @@ async function main (): Promise<void> {
       code: '003',
       password: '123456',
       email: 'marco.tf2@gmail.com',
-      branch: 'Taguatinga',
-      type: 'CS',
-      cellPhone: '61123456789'
+      cellPhone: '61123456789',
+      branchId: 1,
+      functionId: 1
     }
   })
 
@@ -115,6 +132,8 @@ async function main (): Promise<void> {
   })
 
   console.log({
+    branch1,
+    function1,
     user1,
     user2,
     user3,
