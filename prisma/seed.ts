@@ -11,7 +11,7 @@ async function main (): Promise<void> {
     }
   })
 
-  const function1 = await prisma.function.upsert({
+  const level1 = await prisma.level.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -30,7 +30,7 @@ async function main (): Promise<void> {
       email: 'paulo.oinab@gmail.com',
       cellPhone: '61988585218',
       branchId: 1,
-      functionId: 1
+      levelId: 1
     }
   })
 
@@ -44,7 +44,7 @@ async function main (): Promise<void> {
       email: 'raquel.alvares@gmail.com',
       cellPhone: '61981285134',
       branchId: 1,
-      functionId: 1
+      levelId: 1
     }
   })
 
@@ -58,7 +58,7 @@ async function main (): Promise<void> {
       email: 'marco.tf2@gmail.com',
       cellPhone: '61123456789',
       branchId: 1,
-      functionId: 1
+      levelId: 1
     }
   })
 
@@ -133,7 +133,7 @@ async function main (): Promise<void> {
 
   console.log({
     branch1,
-    function1,
+    level1,
     user1,
     user2,
     user3,
