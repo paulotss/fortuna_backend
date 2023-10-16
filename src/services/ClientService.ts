@@ -65,14 +65,15 @@ class ClientService extends UserService {
   }
 
   public async updateUniqueInput (request: IIClientUniqueInputUpdate): Promise<User> {
+    const data = request.input === 'cpf' || request.input === 'balance'
+      ? { [request.input]: request.value }
+      : { user: { update: { [request.input]: request.value } } }
     const clientModel = await this.prisma.client.update({
       where: {
         id: request.clientId
       },
       include: { user: true },
-      data: {
-        [request.input]: request.value
-      }
+      data
     })
     const client = this.createDomain({
       id: clientModel.id,
