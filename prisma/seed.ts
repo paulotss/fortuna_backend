@@ -11,12 +11,29 @@ async function main (): Promise<void> {
     }
   })
 
+  const branch2 = await prisma.branch.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      title: 'Ceilândia'
+    }
+  })
+
   const level1 = await prisma.level.upsert({
     where: { id: 1 },
     update: {},
     create: {
       title: 'Força Viva',
       acronym: 'FFVV'
+    }
+  })
+
+  const level2 = await prisma.level.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      title: 'Membro',
+      acronym: 'MM'
     }
   })
 
@@ -133,7 +150,9 @@ async function main (): Promise<void> {
 
   console.log({
     branch1,
+    branch2,
     level1,
+    level2,
     user1,
     user2,
     user3,
