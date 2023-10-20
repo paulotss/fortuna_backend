@@ -29,7 +29,7 @@ async function main (): Promise<void> {
   })
 
   const level2 = await prisma.level.upsert({
-    where: { id: 1 },
+    where: { id: 2 },
     update: {},
     create: {
       title: 'Membro',

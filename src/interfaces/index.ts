@@ -27,3 +27,16 @@ export interface IIClientUniqueInputUpdate {
   input: string
   value: string | number
 }
+
+export interface IClientCreateRequest {
+  id?: number
+  name: string
+  cellPhone: string
+  email: string
+  branchId: number
+  levelId: number
+  cpf: string
+  code?: string
+  password?: string
+  balance?: number
+}

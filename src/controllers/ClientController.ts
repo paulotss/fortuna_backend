@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type Request, type Response, type NextFunction } from 'express'
 import ClientService from '../services/ClientService'
+import { type IClientCreateRequest } from '../interfaces'
 
 class ClientController {
   private readonly request: Request
@@ -15,7 +15,17 @@ class ClientController {
     this.service = new ClientService()
   }
 
-  public async getById () {
+  public async createOne (): Promise<void> {
+    try {
+      const clientRequest: IClientCreateRequest = this.request.body
+      const result = await this.service.createOne(clientRequest)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getById (): Promise<void> {
     try {
       const { id } = this.request.params
       const client = await this.service.getById(Number(id))
@@ -25,7 +35,7 @@ class ClientController {
     }
   }
 
-  public async getAll () {
+  public async getAll (): Promise<void> {
     try {
       const clients = await this.service.getAll()
       this.response.status(200).json(clients)
@@ -34,7 +44,7 @@ class ClientController {
     }
   }
 
-  public async updateUniqueInput () {
+  public async updateUniqueInput (): Promise<void> {
     try {
       const request = this.request.body
       const result = await this.service.updateUniqueInput(request)

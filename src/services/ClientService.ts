@@ -5,7 +5,7 @@ import CustomError from '../utils/CustomError'
 import UserService from './UserService'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
-import { type IIClientUniqueInputUpdate } from '../interfaces'
+import { type IClientCreateRequest, type IIClientUniqueInputUpdate } from '../interfaces'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
 
@@ -19,6 +19,44 @@ class ClientService extends UserService {
 
   protected createDomain (client: IClient): User {
     return new Client(client)
+  }
+
+  public async createOne (newClient: IClientCreateRequest): Promise<User> {
+    newClient.balance = 0
+    newClient.password = '123456'
+    newClient.code = newClient.cpf.slice(0, 4)
+
+    const clientModel = await this.prisma.client.create({
+      include: { user: true },
+      data: {
+        cpf: newClient.cpf,
+        balance: newClient.balance,
+        user: {
+          create: {
+            name: newClient.name,
+            code: newClient.code,
+            password: newClient.password,
+            email: newClient.email,
+            cellPhone: newClient.cellPhone,
+            branchId: newClient.branchId,
+            levelId: newClient.levelId
+          }
+        }
+      }
+    })
+
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      code: clientModel.user.code,
+      password: clientModel.user.password,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      cpf: clientModel.cpf,
+      balance: clientModel.balance
+    })
+
+    return client
   }
 
   public async getById (clientId: number): Promise<User> {

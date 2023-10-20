@@ -21,6 +21,14 @@ class ProductService {
     })
     return products
   }
+
+  public async createOne (newProduct: IProduct): Promise<Product> {
+    const productModel = await this.prisma.product.create({
+      data: newProduct
+    })
+    const product = this.createDomain(productModel)
+    return product
+  }
 }
 
 export default ProductService

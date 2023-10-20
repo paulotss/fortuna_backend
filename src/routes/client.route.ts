@@ -17,4 +17,8 @@ router.put('/client', (req, res, next) =>
   new ClientController(req, res, next).updateUniqueInput()
 )
 
+router.post('/client', (req, res, next) =>
+  new ClientController(req, res, next).createOne()
+)
+
 export default router
