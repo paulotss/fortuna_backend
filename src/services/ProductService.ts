@@ -3,6 +3,7 @@ import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
+import { type IUniqueInputUpdate } from '../interfaces'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -26,6 +27,15 @@ class ProductService {
   public async getOne (productId: number): Promise<Product> {
     const productModel: IProduct | null = await prisma.product.findUnique({ where: { id: productId } })
     if (productModel === null) throw new CustomError('Not found', 404)
+    const product = this.createDomain(productModel)
+    return product
+  }
+
+  public async updateUniqueInput (request: IUniqueInputUpdate): Promise<Product> {
+    const productModel = await this.prisma.product.update({
+      where: { id: request.itemId },
+      data: { [request.input]: request.value }
+    })
     const product = this.createDomain(productModel)
     return product
   }

@@ -3,13 +3,13 @@ import ProductService from '../services/ProductService'
 
 class ProductController {
   private readonly request: Request
-  private readonly reponse: Response
+  private readonly response: Response
   private readonly next: NextFunction
   private readonly service: ProductService
 
   constructor (req: Request, res: Response, next: NextFunction) {
     this.request = req
-    this.reponse = res
+    this.response = res
     this.next = next
     this.service = new ProductService()
   }
@@ -17,7 +17,7 @@ class ProductController {
   public async getAll (): Promise<void> {
     try {
       const result = await this.service.getAll()
-      this.reponse.status(200).json(result)
+      this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
     }
@@ -27,7 +27,17 @@ class ProductController {
     try {
       const { id } = this.request.params
       const result = await this.service.getOne(Number(id))
-      this.reponse.status(200).json(result)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async updateUniqueInput (): Promise<void> {
+    try {
+      const request = this.request.body
+      const result = await this.service.updateUniqueInput(request)
+      this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
     }

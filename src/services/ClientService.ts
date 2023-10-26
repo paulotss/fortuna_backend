@@ -5,7 +5,7 @@ import CustomError from '../utils/CustomError'
 import UserService from './UserService'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
-import { type IClientCreateRequest, type IIClientUniqueInputUpdate } from '../interfaces'
+import { type IClientCreateRequest, type IUniqueInputUpdate } from '../interfaces'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
 
@@ -118,13 +118,13 @@ class ClientService extends UserService {
     return clients
   }
 
-  public async updateUniqueInput (request: IIClientUniqueInputUpdate): Promise<User> {
+  public async updateUniqueInput (request: IUniqueInputUpdate): Promise<User> {
     const data = request.input === 'cpf' || request.input === 'balance'
       ? { [request.input]: request.value }
       : { user: { update: { [request.input]: request.value } } }
     const clientModel = await this.prisma.client.update({
       where: {
-        id: request.clientId
+        id: request.itemId
       },
       include: { user: { include: { branch: true, level: true } } },
       data

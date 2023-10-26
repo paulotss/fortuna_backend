@@ -13,4 +13,8 @@ router.get('/product/:id', (req, res, next) =>
   new ProductController(req, res, next).getOne()
 )
 
+router.put('/product', (req, res, next) =>
+  new ProductController(req, res, next).updateUniqueInput()
+)
+
 export default router
