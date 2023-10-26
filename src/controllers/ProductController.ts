@@ -22,6 +22,16 @@ class ProductController {
       this.next(error)
     }
   }
+
+  public async getOne (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const result = await this.service.getOne(Number(id))
+      this.reponse.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default ProductController

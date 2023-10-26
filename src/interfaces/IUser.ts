@@ -1,3 +1,6 @@
+import type Branch from '../domains/Branch'
+import type Level from '../domains/Level'
+
 interface IUser {
   id: number | undefined
   name: string
@@ -5,8 +8,8 @@ interface IUser {
   password?: string
   cellPhone: string
   email: string
-  branch: string
-  type: string
+  branch?: Branch
+  level?: Level
 }
 
 export default IUser

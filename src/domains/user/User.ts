@@ -1,4 +1,6 @@
 import type IUser from '../../interfaces/IUser'
+import type Branch from '../Branch'
+import type Level from '../Level'
 
 class User {
   private id: number | undefined
@@ -7,8 +9,8 @@ class User {
   private password?: string
   private cellPhone: string
   private email: string
-  private branch: string
-  private type: string
+  private branch?: Branch
+  private level?: Level
 
   constructor (user: IUser) {
     this.id = user.id
@@ -18,7 +20,7 @@ class User {
     this.cellPhone = user.cellPhone
     this.email = user.email
     this.branch = user.branch
-    this.type = user.type
+    this.level = user.level
   }
 
   public getId (): number | undefined {
@@ -69,20 +71,20 @@ class User {
     this.email = email
   }
 
-  public getBranch (): string {
+  public getBranch (): Branch | undefined {
     return this.branch
   }
 
-  public setBranch (branch: string): void {
+  public setBranch (branch: Branch): void {
     this.branch = branch
   }
 
-  public getType (): string {
-    return this.type
+  public getLevel (): Level | undefined {
+    return this.level
   }
 
-  public setType (type: string): void {
-    this.type = type
+  public setLevel (level: Level): void {
+    this.level = level
   }
 }
 

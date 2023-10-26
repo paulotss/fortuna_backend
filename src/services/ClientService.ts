@@ -5,7 +5,9 @@ import CustomError from '../utils/CustomError'
 import UserService from './UserService'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
-import { type IIClientUniqueInputUpdate } from '../interfaces'
+import { type IClientCreateRequest, type IIClientUniqueInputUpdate } from '../interfaces'
+import Branch from '../domains/Branch'
+import Level from '../domains/Level'
 
 class ClientService extends UserService {
   private readonly prisma: PrismaClient
@@ -19,11 +21,49 @@ class ClientService extends UserService {
     return new Client(client)
   }
 
+  public async createOne (newClient: IClientCreateRequest): Promise<User> {
+    newClient.balance = 0
+    newClient.password = '123456'
+    newClient.code = newClient.cpf.slice(0, 4)
+
+    const clientModel = await this.prisma.client.create({
+      include: { user: true },
+      data: {
+        cpf: newClient.cpf,
+        balance: newClient.balance,
+        user: {
+          create: {
+            name: newClient.name,
+            code: newClient.code,
+            password: newClient.password,
+            email: newClient.email,
+            cellPhone: newClient.cellPhone,
+            branchId: newClient.branchId,
+            levelId: newClient.levelId
+          }
+        }
+      }
+    })
+
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      code: clientModel.user.code,
+      password: clientModel.user.password,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      cpf: clientModel.cpf,
+      balance: clientModel.balance
+    })
+
+    return client
+  }
+
   public async getById (clientId: number): Promise<User> {
     const clientModel = await this.prisma.client.findUnique({
       where: { id: clientId },
       include: {
-        user: true
+        user: { include: { branch: true, level: true } }
       }
     })
     if (clientModel === null) throw new CustomError('Not found', 404)
@@ -34,8 +74,15 @@ class ClientService extends UserService {
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
-      branch: clientModel.user.branch,
-      type: clientModel.user.type,
+      branch: new Branch({
+        id: clientModel.user.branch.id,
+        title: clientModel.user.branch.title
+      }),
+      level: new Level({
+        id: clientModel.user.level.id,
+        title: clientModel.user.level.title,
+        acronym: clientModel.user.level.acronym
+      }),
       cpf: clientModel.cpf,
       balance: clientModel.balance
     })
@@ -45,7 +92,7 @@ class ClientService extends UserService {
 
   public async getAll (): Promise<User[]> {
     const clientsModels = await this.prisma.client.findMany({
-      include: { user: true }
+      include: { user: { include: { branch: true, level: true } } }
     })
     const clients: User[] = clientsModels.map((client) => {
       return this.createDomain({
@@ -55,8 +102,15 @@ class ClientService extends UserService {
         password: client.user.password,
         cellPhone: client.user.cellPhone,
         email: client.user.email,
-        branch: client.user.branch,
-        type: client.user.type,
+        branch: new Branch({
+          id: client.user.branch.id,
+          title: client.user.branch.title
+        }),
+        level: new Level({
+          id: client.user.level.id,
+          title: client.user.level.title,
+          acronym: client.user.level.acronym
+        }),
         cpf: client.cpf,
         balance: client.balance
       })
@@ -72,7 +126,7 @@ class ClientService extends UserService {
       where: {
         id: request.clientId
       },
-      include: { user: true },
+      include: { user: { include: { branch: true, level: true } } },
       data
     })
     const client = this.createDomain({
@@ -82,8 +136,15 @@ class ClientService extends UserService {
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
-      branch: clientModel.user.branch,
-      type: clientModel.user.type,
+      branch: new Branch({
+        id: clientModel.user.branch.id,
+        title: clientModel.user.branch.title
+      }),
+      level: new Level({
+        id: clientModel.user.level.id,
+        title: clientModel.user.level.title,
+        acronym: clientModel.user.level.acronym
+      }),
       cpf: clientModel.cpf,
       balance: clientModel.balance
     })

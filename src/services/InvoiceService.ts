@@ -7,6 +7,8 @@ import Client from '../domains/user/Client'
 import Seller from '../domains/user/Seller'
 import Cashier from '../domains/Cashier'
 import CustomError from '../utils/CustomError'
+import Branch from '../domains/Branch'
+import Level from '../domains/Level'
 
 class InvoiceService {
   private readonly prisma: PrismaClient
@@ -63,8 +65,8 @@ class InvoiceService {
         saleDate: { gte: request.startDate, lte: request.endDate }
       },
       include: {
-        client: { include: { user: true } },
-        seller: { include: { user: true } },
+        client: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { user: { include: { branch: true, level: true } } } },
         cashier: true
       }
     })
@@ -77,8 +79,15 @@ class InvoiceService {
         name: invoice.client.user.name,
         cellPhone: invoice.client.user.cellPhone,
         email: invoice.client.user.email,
-        branch: invoice.client.user.branch,
-        type: invoice.client.user.type,
+        branch: new Branch({
+          id: invoice.client.user.branch.id,
+          title: invoice.client.user.branch.title
+        }),
+        level: new Level({
+          id: invoice.client.user.level.id,
+          title: invoice.client.user.level.title,
+          acronym: invoice.client.user.level.acronym
+        }),
         cpf: invoice.client.cpf,
         balance: invoice.client.balance
       }),
@@ -87,8 +96,15 @@ class InvoiceService {
         name: invoice.seller.user.name,
         cellPhone: invoice.seller.user.cellPhone,
         email: invoice.seller.user.email,
-        branch: invoice.seller.user.branch,
-        type: invoice.seller.user.type,
+        branch: new Branch({
+          id: invoice.seller.user.branch.id,
+          title: invoice.seller.user.branch.title
+        }),
+        level: new Level({
+          id: invoice.seller.user.level.id,
+          title: invoice.seller.user.level.title,
+          acronym: invoice.seller.user.level.acronym
+        }),
         createdAt: invoice.seller.createdAt
       }),
       cashier: new Cashier({
@@ -103,8 +119,8 @@ class InvoiceService {
     const invoiceModel = await this.prisma.invoice.findUnique({
       where: { id: invoiceId },
       include: {
-        client: { include: { user: true } },
-        seller: { include: { user: true } },
+        client: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { user: { include: { branch: true, level: true } } } },
         cashier: true
       }
     })
@@ -118,8 +134,15 @@ class InvoiceService {
         name: invoiceModel.client.user.name,
         cellPhone: invoiceModel.client.user.cellPhone,
         email: invoiceModel.client.user.email,
-        branch: invoiceModel.client.user.branch,
-        type: invoiceModel.client.user.type,
+        branch: new Branch({
+          id: invoiceModel.client.user.branch.id,
+          title: invoiceModel.client.user.branch.title
+        }),
+        level: new Level({
+          id: invoiceModel.client.user.level.id,
+          title: invoiceModel.client.user.level.title,
+          acronym: invoiceModel.client.user.level.acronym
+        }),
         cpf: invoiceModel.client.cpf,
         balance: invoiceModel.client.balance
       }),
@@ -128,8 +151,15 @@ class InvoiceService {
         name: invoiceModel.seller.user.name,
         cellPhone: invoiceModel.seller.user.cellPhone,
         email: invoiceModel.seller.user.email,
-        branch: invoiceModel.seller.user.branch,
-        type: invoiceModel.seller.user.type,
+        branch: new Branch({
+          id: invoiceModel.seller.user.branch.id,
+          title: invoiceModel.seller.user.branch.title
+        }),
+        level: new Level({
+          id: invoiceModel.seller.user.level.id,
+          title: invoiceModel.seller.user.level.title,
+          acronym: invoiceModel.seller.user.level.acronym
+        }),
         createdAt: invoiceModel.seller.createdAt
       }),
       cashier: new Cashier({

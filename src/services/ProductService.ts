@@ -2,6 +2,7 @@ import Product from '../domains/Product'
 import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
+import CustomError from '../utils/CustomError'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -20,6 +21,21 @@ class ProductService {
       return this.createDomain(product)
     })
     return products
+  }
+
+  public async getOne (productId: number): Promise<Product> {
+    const productModel: IProduct | null = await prisma.product.findUnique({ where: { id: productId } })
+    if (productModel === null) throw new CustomError('Not found', 404)
+    const product = this.createDomain(productModel)
+    return product
+  }
+
+  public async createOne (newProduct: IProduct): Promise<Product> {
+    const productModel = await this.prisma.product.create({
+      data: newProduct
+    })
+    const product = this.createDomain(productModel)
+    return product
   }
 }
 
