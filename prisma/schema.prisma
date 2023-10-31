@@ -45,6 +45,15 @@ model Level {
   user    User[]
 }
 
+model Expense {
+  id         Int      @id @default(autoincrement())
+  amount     Int
+  value      Decimal  @db.Decimal(10, 2)
+  launchDate DateTime
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+}
+
 model Product {
   id      Int                @id @default(autoincrement())
   title   String             @db.VarChar(255)
@@ -52,6 +61,7 @@ model Product {
   amount  Int
   barCode String             @db.VarChar(45)
   invoice InvoiceToProduct[]
+  Expense Expense[]
 }
 
 model Client {

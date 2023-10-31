@@ -148,6 +148,17 @@ async function main (): Promise<void> {
     }
   })
 
+  const expense1 = await prisma.expense.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      amount: 5,
+      value: 15.60,
+      launchDate: '2023-10-30T12:00:00.000Z',
+      productId: 3
+    }
+  })
+
   console.log({
     branch1,
     branch2,
@@ -162,7 +173,8 @@ async function main (): Promise<void> {
     cashier1,
     product1,
     product2,
-    product3
+    product3,
+    expense1
   })
 }
 
