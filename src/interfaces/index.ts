@@ -40,3 +40,10 @@ export interface IClientCreateRequest {
   password?: string
   balance?: number
 }
+
+export interface IExpenseCreateRequest {
+  amount: number
+  value: number
+  launchDate: string
+  productId: number
+}
