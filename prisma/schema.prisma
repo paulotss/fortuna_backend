@@ -54,6 +54,15 @@ model Expense {
   productId  Int
 }
 
+model Loss {
+  id          Int      @id @default(autoincrement())
+  amount      Int
+  description String   @db.VarChar(255)
+  createAt    DateTime
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+}
+
 model Product {
   id      Int                @id @default(autoincrement())
   title   String             @db.VarChar(255)
@@ -62,6 +71,7 @@ model Product {
   barCode String             @db.VarChar(45)
   invoice InvoiceToProduct[]
   Expense Expense[]
+  Loss    Loss[]
 }
 
 model Client {

@@ -47,3 +47,10 @@ export interface IExpenseCreateRequest {
   launchDate: string
   productId: number
 }
+
+export interface ILossCreateRequest {
+  amount: number
+  description: string
+  createAt: string
+  productId: number
+}
