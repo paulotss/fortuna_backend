@@ -17,4 +17,8 @@ router.put('/product', (req, res, next) =>
   new ProductController(req, res, next).updateUniqueInput()
 )
 
+router.post('/product', (req, res, next) =>
+  new ProductController(req, res, next).createOne()
+)
+
 export default router

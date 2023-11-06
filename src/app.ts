@@ -6,6 +6,8 @@ import invoiceRouter from './routes/invoice.route'
 import cashierRouter from './routes/cashier.route'
 import branchRouter from './routes/branch.route'
 import levelRouter from './routes/level.router'
+import expenseRouter from './routes/expense.route'
+import lossRouter from './routes/loss.route'
 import ErrorHandle from './middlewares/ErrorHandle'
 import cors from 'cors'
 
@@ -21,6 +23,8 @@ app.use(invoiceRouter)
 app.use(cashierRouter)
 app.use(branchRouter)
 app.use(levelRouter)
+app.use(expenseRouter)
+app.use(lossRouter)
 
 app.use(ErrorHandle.handle)
 
