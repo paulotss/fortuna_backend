@@ -31,6 +31,19 @@ class ProductService {
     return product
   }
 
+  public async getByTitle (request: string): Promise<Product[]> {
+    const productsModel = await this.prisma.product.findMany({
+      take: 5,
+      where: {
+        title: { contains: request }
+      }
+    })
+    const products = productsModel.map((product) => (
+      this.createDomain(product)
+    ))
+    return products
+  }
+
   public async updateUniqueInput (request: IUniqueInputUpdate): Promise<Product> {
     const productModel = await this.prisma.product.update({
       where: { id: request.itemId },

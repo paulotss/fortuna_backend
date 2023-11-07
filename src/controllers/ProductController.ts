@@ -1,5 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import ProductService from '../services/ProductService'
+import CustomError from '../utils/CustomError'
 
 class ProductController {
   private readonly request: Request
@@ -27,6 +28,17 @@ class ProductController {
     try {
       const { id } = this.request.params
       const result = await this.service.getOne(Number(id))
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getByTitle (): Promise<void> {
+    try {
+      const { title } = this.request.query
+      if (typeof title !== 'string') throw new CustomError('Not found', 404)
+      const result = await this.service.getByTitle(title)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
