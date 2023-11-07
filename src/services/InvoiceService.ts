@@ -169,6 +169,21 @@ class InvoiceService {
     })
     return invoice
   }
+
+  public async getRecents (limit: number): Promise<Invoice[]> {
+    const invoicesModel = await this.prisma.invoice.findMany({
+      take: limit,
+      orderBy: [{ saleDate: 'desc' }]
+    })
+    const invoices = invoicesModel.map((invoice) => (
+      this.createDomain({
+        id: invoice.id,
+        saleDate: invoice.saleDate,
+        value: invoice.value
+      })
+    ))
+    return invoices
+  }
 }
 
 export default InvoiceService

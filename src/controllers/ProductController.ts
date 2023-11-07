@@ -45,6 +45,16 @@ class ProductController {
     }
   }
 
+  public async getRecents (): Promise<void> {
+    try {
+      const { limit } = this.request.params
+      const result = await this.service.getRecents(Number(limit))
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
   public async updateUniqueInput (): Promise<void> {
     try {
       const request = this.request.body

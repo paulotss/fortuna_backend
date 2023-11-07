@@ -4,6 +4,7 @@ import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
 import { type IUniqueInputUpdate } from '../interfaces'
+import InvoiceService from './InvoiceService'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -21,6 +22,20 @@ class ProductService {
     const products: Product[] = productsModels.map((product) => {
       return this.createDomain(product)
     })
+    return products
+  }
+
+  public async getRecents (limit: number): Promise<Product[]> {
+    const invoiceInstance = new InvoiceService()
+    const invoices = await invoiceInstance.getRecents(5)
+    const invoiceIds = invoices.map((invoice) => invoice.getId() ?? 0)
+    const productsModel = await this.prisma.product.findMany({
+      take: limit,
+      where: { id: { in: invoiceIds } }
+    })
+    const products = productsModel.map((product) => (
+      this.createDomain(product)
+    ))
     return products
   }
 

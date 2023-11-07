@@ -13,6 +13,10 @@ router.get('/product/:id', (req, res, next) =>
   new ProductController(req, res, next).getOne()
 )
 
+router.get('/product/recent/:limit', (req, res, next) =>
+  new ProductController(req, res, next).getRecents()
+)
+
 router.get('/products/search', (req, res, next) =>
   new ProductController(req, res, next).getByTitle()
 )
