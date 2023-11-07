@@ -92,6 +92,7 @@ class ClientService extends UserService {
 
   public async getByName (request: string): Promise<User[]> {
     const clientModel = await this.prisma.client.findMany({
+      take: 5,
       where: {
         user: { name: { contains: request } }
       },
