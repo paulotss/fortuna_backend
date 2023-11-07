@@ -1,6 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import ClientService from '../services/ClientService'
 import { type IClientCreateRequest } from '../interfaces'
+import CustomError from '../utils/CustomError'
 
 class ClientController {
   private readonly request: Request
@@ -39,6 +40,17 @@ class ClientController {
     try {
       const clients = await this.service.getAll()
       this.response.status(200).json(clients)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getByName (): Promise<void> {
+    try {
+      const { name } = this.request.query
+      if (name === undefined || typeof name !== 'string') throw new CustomError('Not found', 404)
+      const result = await this.service.getByName(name)
+      this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
     }

@@ -90,6 +90,41 @@ class ClientService extends UserService {
     return client
   }
 
+  public async getByName (request: string): Promise<User[]> {
+    const clientModel = await this.prisma.client.findMany({
+      where: {
+        user: { name: { contains: request } }
+      },
+      include: {
+        user: {
+          include: { branch: true, level: true }
+        }
+      }
+    })
+    const clients = clientModel.map((client) => (
+      this.createDomain({
+        id: client.id,
+        name: client.user.name,
+        code: client.user.code,
+        password: client.user.password,
+        cellPhone: client.user.cellPhone,
+        email: client.user.email,
+        branch: new Branch({
+          id: client.user.branch.id,
+          title: client.user.branch.title
+        }),
+        level: new Level({
+          id: client.user.level.id,
+          title: client.user.level.title,
+          acronym: client.user.level.acronym
+        }),
+        cpf: client.cpf,
+        balance: client.balance
+      })
+    ))
+    return clients
+  }
+
   public async getAll (): Promise<User[]> {
     const clientsModels = await this.prisma.client.findMany({
       include: { user: { include: { branch: true, level: true } } }
