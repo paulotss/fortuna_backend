@@ -9,4 +9,8 @@ router.post('/loss', (req, res, next) =>
   new LossController(req, res, next).createOne()
 )
 
+router.get('/loss/report', (req, res, next) =>
+  new LossController(req, res, next).getByCreateAt()
+)
+
 export default router

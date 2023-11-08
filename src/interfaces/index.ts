@@ -59,3 +59,8 @@ export interface ILossCreateRequest {
   createAt: string
   productId: number
 }
+
+export interface ILossCreateAtRequest {
+  startDate: Date | string
+  endDate: Date | string
+}
