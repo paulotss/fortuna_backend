@@ -9,4 +9,8 @@ router.post('/expense', (req, res, next) =>
   new ExpenseController(req, res, next).createOne()
 )
 
+router.get('/expense/report', (req, res, next) =>
+  new ExpenseController(req, res, next).getByLaunchDate()
+)
+
 export default router
