@@ -14,7 +14,7 @@ router.get('/product/:id', (req, res, next) =>
 )
 
 router.get('/product/recent/:limit', (req, res, next) =>
-  new ProductController(req, res, next).getRecents()
+  new ProductController(req, res, next).getRecentlySoldProducts()
 )
 
 router.get('/products/search', (req, res, next) =>

@@ -45,10 +45,10 @@ class ProductController {
     }
   }
 
-  public async getRecents (): Promise<void> {
+  public async getRecentlySoldProducts (): Promise<void> {
     try {
       const { limit } = this.request.params
-      const result = await this.service.getRecents(Number(limit))
+      const result = await this.service.getRecentlySoldProducts(Number(limit))
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
