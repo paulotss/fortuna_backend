@@ -48,9 +48,19 @@ export interface IExpenseCreateRequest {
   productId: number
 }
 
+export interface IExpenseLaunchDateRequest {
+  startDate: Date | string
+  endDate: Date | string
+}
+
 export interface ILossCreateRequest {
   amount: number
   description: string
   createAt: string
   productId: number
+}
+
+export interface ILossCreateAtRequest {
+  startDate: Date | string
+  endDate: Date | string
 }

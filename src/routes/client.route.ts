@@ -13,6 +13,10 @@ router.get('/clients', (req, res, next) =>
   new ClientController(req, res, next).getAll()
 )
 
+router.get('/clients/search', (req, res, next) =>
+  new ClientController(req, res, next).getByName()
+)
+
 router.put('/client', (req, res, next) =>
   new ClientController(req, res, next).updateUniqueInput()
 )

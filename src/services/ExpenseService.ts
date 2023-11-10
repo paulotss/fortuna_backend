@@ -2,7 +2,8 @@ import { type PrismaClient } from '@prisma/client'
 import Expense from '../domains/Expense'
 import type IExpense from '../interfaces/IExpense'
 import prisma from '../utils/prisma'
-import { type IExpenseCreateRequest } from '../interfaces'
+import { type IExpenseLaunchDateRequest, type IExpenseCreateRequest } from '../interfaces'
+import Product from '../domains/Product'
 
 class ExpenseService {
   private readonly prisma: PrismaClient
@@ -24,6 +25,23 @@ class ExpenseService {
       launchDate: expenseModel.launchDate
     })
     return expense
+  }
+
+  public async getByLaunchDate (request: IExpenseLaunchDateRequest): Promise<Expense[]> {
+    const expensesModel = await this.prisma.expense.findMany({
+      where: { launchDate: { gte: request.startDate, lte: request.endDate } },
+      include: { product: true }
+    })
+    const expenses = expensesModel.map((expense) => (
+      this.createDomain({
+        id: expense.id,
+        amount: expense.amount,
+        value: expense.value,
+        launchDate: expense.launchDate,
+        product: new Product(expense.product)
+      })
+    ))
+    return expenses
   }
 }
 

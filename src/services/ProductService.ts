@@ -24,11 +24,41 @@ class ProductService {
     return products
   }
 
+  public async getRecentlySoldProducts (limit: number): Promise<Product[]> {
+    const invoicesModel = await this.prisma.invoice.findMany({
+      take: limit,
+      orderBy: [{ saleDate: 'desc' }],
+      include: { products: { include: { product: true } } }
+    })
+    const products: Product[] = []
+    invoicesModel.forEach((invoice) => {
+      invoice.products.forEach((p) => {
+        if (!products.some((v) => v.getId() === p.product.id)) {
+          products.push(this.createDomain(p.product))
+        }
+      })
+    })
+    return products
+  }
+
   public async getOne (productId: number): Promise<Product> {
     const productModel: IProduct | null = await prisma.product.findUnique({ where: { id: productId } })
     if (productModel === null) throw new CustomError('Not found', 404)
     const product = this.createDomain(productModel)
     return product
+  }
+
+  public async getByTitle (request: string): Promise<Product[]> {
+    const productsModel = await this.prisma.product.findMany({
+      take: 5,
+      where: {
+        title: { contains: request }
+      }
+    })
+    const products = productsModel.map((product) => (
+      this.createDomain(product)
+    ))
+    return products
   }
 
   public async updateUniqueInput (request: IUniqueInputUpdate): Promise<Product> {
