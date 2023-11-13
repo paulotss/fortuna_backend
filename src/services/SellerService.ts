@@ -51,6 +51,19 @@ class SellerService extends UserService {
     })
     return seller
   }
+
+  public async getByUserId (userId: number): Promise<User> {
+    const sellerModel = await this.prisma.seller.findFirst({
+      where: { userId },
+      include: { user: true }
+    })
+    if (sellerModel === null) throw new CustomError('Not found', 404)
+    const seller = this.createDomain({
+      createdAt: sellerModel.createdAt,
+      ...sellerModel.user
+    })
+    return seller
+  }
 }
 
 export default SellerService

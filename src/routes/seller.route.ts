@@ -14,8 +14,12 @@ router.post('/seller/verify', (req, res, next) =>
   new SellerController(req, res, next).verify()
 )
 
-router.get('/seller/:id', (req, res, next) =>
+router.post('/seller', (req, res, next) =>
   new SellerController(req, res, next).createOne()
+)
+
+router.get('/seller/:id', (req, res, next) =>
+  new SellerController(req, res, next).getByUserId()
 )
 
 export default router
