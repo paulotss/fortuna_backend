@@ -33,6 +33,16 @@ class SellerController {
       this.next(error)
     }
   }
+
+  public async createOne (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const result = await this.service.createOne(Number(id))
+      this.response.status(201).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default SellerController
