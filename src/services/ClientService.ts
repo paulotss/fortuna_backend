@@ -84,7 +84,8 @@ class ClientService extends UserService {
         acronym: clientModel.user.level.acronym
       }),
       cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      userId: clientModel.userId
     })
     await this.prisma.$disconnect()
     return client
