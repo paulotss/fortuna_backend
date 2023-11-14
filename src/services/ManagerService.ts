@@ -18,12 +18,12 @@ class ManagerServive extends UserService {
     return new Manager(manager)
   }
 
-  public async getByUserId (userId: number): Promise<User> {
+  public async getByUserId (userId: number): Promise<User | null> {
     const managerModel = await this.prisma.manager.findFirst({
       where: { userId },
       include: { user: true }
     })
-    if (managerModel === null) throw new CustomError('Not found', 404)
+    if (managerModel === null) return null
     const manager = this.createDomain({
       createdAt: managerModel.createdAt,
       ...managerModel.user
