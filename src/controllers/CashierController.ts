@@ -42,6 +42,16 @@ class CashierController {
       this.next(error)
     }
   }
+
+  public async updateOne (): Promise<void> {
+    try {
+      const request = this.request.body
+      const result = await this.service.updateOne(request)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default CashierController
