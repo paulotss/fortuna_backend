@@ -13,4 +13,8 @@ router.get('/cashier/:id', (req, res, next) =>
   new CashierController(req, res, next).getById()
 )
 
+router.post('/cashier', (req, res, next) =>
+  new CashierController(req, res, next).createOne()
+)
+
 export default router

@@ -28,6 +28,14 @@ class CashierService {
     if (cashier === null) throw new CustomError('Not found', 404)
     return this.createDomain(cashier)
   }
+
+  public async createOne (request: ICashier): Promise<Cashier> {
+    const cashierModel = await this.prisma.cashier.create({
+      data: { title: request.title }
+    })
+    const cashier = this.createDomain(cashierModel)
+    return cashier
+  }
 }
 
 export default CashierService
