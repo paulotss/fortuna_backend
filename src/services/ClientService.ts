@@ -26,6 +26,11 @@ class ClientService extends UserService {
     newClient.password = '123456'
     newClient.code = newClient.cpf.slice(0, 4)
 
+    const existCpf = await this.prisma.client.findFirst({
+      where: { cpf: newClient.cpf }
+    })
+    if (existCpf !== null) throw new CustomError('CPF already exist', 409)
+
     const clientModel = await this.prisma.client.create({
       include: { user: true },
       data: {
@@ -84,7 +89,8 @@ class ClientService extends UserService {
         acronym: clientModel.user.level.acronym
       }),
       cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      userId: clientModel.userId
     })
     await this.prisma.$disconnect()
     return client

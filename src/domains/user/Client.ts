@@ -5,11 +5,13 @@ import { type Prisma } from '@prisma/client'
 class Client extends User {
   private cpf: string
   private balance: Prisma.Decimal
+  private userId: number | undefined
 
   constructor (client: IClient) {
     super(client)
     this.cpf = client.cpf
     this.balance = client.balance
+    this.userId = client.userId
   }
 
   public getCpf (): string {
@@ -26,6 +28,14 @@ class Client extends User {
 
   public setBalance (balance: Prisma.Decimal): void {
     this.balance = balance
+  }
+
+  public getUserId (): number | undefined {
+    return this.userId
+  }
+
+  public setUserId (userId: number): void {
+    this.userId = userId
   }
 }
 

@@ -37,6 +37,33 @@ class SellerService extends UserService {
     const token = jwt.generateToken(jwtPayload)
     return token
   }
+
+  public async createOne (userId: number): Promise<User> {
+    const sellerExist = await this.prisma.seller.findFirst({ where: { userId } })
+    if (sellerExist !== null) throw new CustomError('Already exists', 409)
+    const sellerModel = await this.prisma.seller.create({
+      data: { userId },
+      include: { user: true }
+    })
+    const seller = this.createDomain({
+      createdAt: sellerModel.createdAt,
+      ...sellerModel.user
+    })
+    return seller
+  }
+
+  public async getByUserId (userId: number): Promise<User | null> {
+    const sellerModel = await this.prisma.seller.findFirst({
+      where: { userId },
+      include: { user: true }
+    })
+    if (sellerModel === null) return null
+    const seller = this.createDomain({
+      createdAt: sellerModel.createdAt,
+      ...sellerModel.user
+    })
+    return seller
+  }
 }
 
 export default SellerService

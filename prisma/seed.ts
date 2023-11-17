@@ -87,6 +87,14 @@ async function main (): Promise<void> {
     }
   })
 
+  const manager1 = await prisma.manager.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      userId: 1
+    }
+  })
+
   const client1 = await prisma.client.upsert({
     where: { id: 1 },
     update: {},
@@ -179,6 +187,7 @@ async function main (): Promise<void> {
     user2,
     user3,
     seller1,
+    manager1,
     client1,
     client2,
     cashier1,
