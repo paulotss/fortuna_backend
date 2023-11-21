@@ -62,7 +62,7 @@ class InvoiceService {
     const invoicesModels = await this.prisma.invoice.findMany({
       where: {
         cashier: request.cashierId !== 0 ? { id: request.cashierId } : { id: { gt: 0 } },
-        saleDate: { gte: request.startDate, lte: request.endDate }
+        saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) }
       },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
