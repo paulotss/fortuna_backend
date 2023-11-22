@@ -17,7 +17,7 @@ class ClientService extends UserService {
   constructor () {
     super()
     this.prisma = prisma
-    this.accessLevel = 0
+    this.accessLevel = 2
   }
 
   protected createDomain (client: IClient): User {
