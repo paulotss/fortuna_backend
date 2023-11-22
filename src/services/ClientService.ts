@@ -5,20 +5,39 @@ import CustomError from '../utils/CustomError'
 import UserService from './UserService'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
-import { type IClientCreateRequest, type IUniqueInputUpdate } from '../interfaces'
+import { type IClientCreateRequest, type IUniqueInputUpdate, type RequestLoginType } from '../interfaces'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
+import JwtToken, { type JwtPayloadType } from '../utils/JwtToken'
 
 class ClientService extends UserService {
   private readonly prisma: PrismaClient
+  private readonly accessLevel: number
 
   constructor () {
     super()
     this.prisma = prisma
+    this.accessLevel = 0
   }
 
   protected createDomain (client: IClient): User {
     return new Client(client)
+  }
+
+  public async login (payload: RequestLoginType): Promise<string> {
+    const client = await this.prisma.client.findFirst({
+      where: {
+        user: {
+          code: payload.code,
+          password: payload.password
+        }
+      }
+    })
+    if (client === null) throw new CustomError('Forbidden', 403)
+    const jwtPayload: JwtPayloadType = { id: client.id, accessLevel: this.accessLevel }
+    const jwt = new JwtToken()
+    const token = jwt.generateToken(jwtPayload)
+    return token
   }
 
   public async createOne (newClient: IClientCreateRequest): Promise<User> {

@@ -16,6 +16,26 @@ class ClientController {
     this.service = new ClientService()
   }
 
+  public async login (): Promise<void> {
+    try {
+      const payload = this.request.body
+      const token = await this.service.login(payload)
+      this.response.status(200).json(token)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async verify (): Promise<void> {
+    try {
+      const { token } = this.request.body
+      const payload = await this.service.verify(token)
+      this.response.status(200).json(payload)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
   public async createOne (): Promise<void> {
     try {
       const clientRequest: IClientCreateRequest = this.request.body
