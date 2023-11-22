@@ -25,6 +25,10 @@ router.get('/clients/search', (req, res, next) =>
   new ClientController(req, res, next).getByName()
 )
 
+router.get('/client/invoice/:id', (req, res, next) =>
+  new ClientController(req, res, next).getByIdWithInvoices()
+)
+
 router.put('/client', (req, res, next) =>
   new ClientController(req, res, next).updateUniqueInput()
 )

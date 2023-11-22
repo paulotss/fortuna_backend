@@ -5,10 +5,12 @@ import CustomError from '../utils/CustomError'
 import UserService from './UserService'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
-import { type IClientCreateRequest, type IUniqueInputUpdate, type RequestLoginType } from '../interfaces'
+import { type IClientInvoicesRequest, type IClientCreateRequest, type IUniqueInputUpdate, type RequestLoginType } from '../interfaces'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
 import JwtToken, { type JwtPayloadType } from '../utils/JwtToken'
+import Invoice from '../domains/Invoice'
+import Cashier from '../domains/Cashier'
 
 class ClientService extends UserService {
   private readonly prisma: PrismaClient
@@ -177,6 +179,43 @@ class ClientService extends UserService {
       })
     })
     return clients
+  }
+
+  public async getByIdWithInvoices (request: IClientInvoicesRequest): Promise<User> {
+    const clientModel = await this.prisma.client.findUnique({
+      where: { id: request.clientId },
+      include: {
+        invoice: {
+          where: { saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) } },
+          take: request.limit,
+          include: { cashier: true }
+        },
+        user: true
+      }
+    })
+    if (clientModel === null) throw new CustomError('Not found', 404)
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      code: clientModel.user.code,
+      password: clientModel.user.password,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      cpf: clientModel.cpf,
+      balance: clientModel.balance,
+      invoices: clientModel.invoice.map((v) => (
+        new Invoice({
+          id: v.id,
+          saleDate: v.saleDate,
+          value: v.value,
+          cashier: new Cashier({
+            id: v.cashierId,
+            title: v.cashier.title
+          })
+        })
+      ))
+    })
+    return client
   }
 
   public async updateUniqueInput (request: IUniqueInputUpdate): Promise<User> {

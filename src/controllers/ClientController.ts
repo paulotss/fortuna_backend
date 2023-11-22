@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import ClientService from '../services/ClientService'
-import { type IClientCreateRequest } from '../interfaces'
+import { type IClientInvoicesRequest, type IClientCreateRequest } from '../interfaces'
 import CustomError from '../utils/CustomError'
 
 class ClientController {
@@ -70,6 +70,23 @@ class ClientController {
       const { name } = this.request.query
       if (name === undefined || typeof name !== 'string') throw new CustomError('Not found', 404)
       const result = await this.service.getByName(name)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getByIdWithInvoices (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const { startDate, endDate, limit } = this.request.query
+      const request: IClientInvoicesRequest = {
+        clientId: Number(id),
+        startDate: typeof startDate === 'string' ? new Date(startDate.toString()) : new Date(),
+        endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date(),
+        limit: typeof limit === 'string' ? Number(limit) : undefined
+      }
+      const result = await this.service.getByIdWithInvoices(request)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
