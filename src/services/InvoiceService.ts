@@ -1,5 +1,5 @@
 import Invoice from '../domains/Invoice'
-import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest } from '../interfaces'
+import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest, type IClientInvoicesRequest } from '../interfaces'
 import type IInvoice from '../interfaces/IInvoice'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
@@ -62,6 +62,63 @@ class InvoiceService {
     const invoicesModels = await this.prisma.invoice.findMany({
       where: {
         cashier: request.cashierId !== 0 ? { id: request.cashierId } : { id: { gt: 0 } },
+        saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) }
+      },
+      include: {
+        client: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { user: { include: { branch: true, level: true } } } },
+        cashier: true
+      }
+    })
+    const invoices = invoicesModels.map((invoice) => this.createDomain({
+      id: invoice.id,
+      saleDate: invoice.saleDate,
+      value: invoice.value,
+      client: new Client({
+        id: invoice.client.id,
+        name: invoice.client.user.name,
+        cellPhone: invoice.client.user.cellPhone,
+        email: invoice.client.user.email,
+        branch: new Branch({
+          id: invoice.client.user.branch.id,
+          title: invoice.client.user.branch.title
+        }),
+        level: new Level({
+          id: invoice.client.user.level.id,
+          title: invoice.client.user.level.title,
+          acronym: invoice.client.user.level.acronym
+        }),
+        cpf: invoice.client.cpf,
+        balance: invoice.client.balance
+      }),
+      seller: new Seller({
+        id: invoice.seller.id,
+        name: invoice.seller.user.name,
+        cellPhone: invoice.seller.user.cellPhone,
+        email: invoice.seller.user.email,
+        branch: new Branch({
+          id: invoice.seller.user.branch.id,
+          title: invoice.seller.user.branch.title
+        }),
+        level: new Level({
+          id: invoice.seller.user.level.id,
+          title: invoice.seller.user.level.title,
+          acronym: invoice.seller.user.level.acronym
+        }),
+        createdAt: invoice.seller.createdAt
+      }),
+      cashier: new Cashier({
+        id: invoice.cashier.id,
+        title: invoice.cashier.title
+      })
+    }))
+    return invoices
+  }
+
+  public async getByClientId (request: IClientInvoicesRequest): Promise<Invoice[]> {
+    const invoicesModels = await this.prisma.invoice.findMany({
+      where: {
+        client: { id: request.clientId },
         saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) }
       },
       include: {

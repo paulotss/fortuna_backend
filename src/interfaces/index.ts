@@ -64,3 +64,10 @@ export interface ILossCreateAtRequest {
   startDate: Date | string
   endDate: Date | string
 }
+
+export interface IClientInvoicesRequest {
+  clientId: number
+  startDate: Date | string
+  endDate: Date | string
+  limit?: number
+}

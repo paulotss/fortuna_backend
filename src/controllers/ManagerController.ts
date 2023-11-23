@@ -14,6 +14,26 @@ class ManagerController {
     this.service = new ManagerServive()
   }
 
+  public async login (): Promise<void> {
+    try {
+      const payload = this.request.body
+      const token = await this.service.login(payload)
+      this.response.status(200).json(token)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async verify (): Promise<void> {
+    try {
+      const { token } = this.request.body
+      const payload = await this.service.verify(token)
+      this.response.status(200).json(payload)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
   public async getByUserId (): Promise<void> {
     try {
       const { id } = this.request.params

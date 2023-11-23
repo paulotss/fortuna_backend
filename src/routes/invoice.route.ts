@@ -17,4 +17,8 @@ router.get('/invoice/:id', (req, res, next) =>
   new InvoiceController(req, res, next).getById()
 )
 
+router.get('/invoice/client/:id', (req, res, next) =>
+  new InvoiceController(req, res, next).getByClientId()
+)
+
 export default router

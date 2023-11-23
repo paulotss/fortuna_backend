@@ -5,6 +5,14 @@ import ClientController from '../controllers/ClientController'
 
 const router = Router()
 
+router.post('/client/login', (req, res, next) =>
+  new ClientController(req, res, next).login()
+)
+
+router.post('/client/verify', (req, res, next) =>
+  new ClientController(req, res, next).verify()
+)
+
 router.get('/client/:id', (req, res, next) =>
   new ClientController(req, res, next).getById()
 )
@@ -15,6 +23,10 @@ router.get('/clients', (req, res, next) =>
 
 router.get('/clients/search', (req, res, next) =>
   new ClientController(req, res, next).getByName()
+)
+
+router.get('/client/invoice/:id', (req, res, next) =>
+  new ClientController(req, res, next).getByIdWithInvoices()
 )
 
 router.put('/client', (req, res, next) =>

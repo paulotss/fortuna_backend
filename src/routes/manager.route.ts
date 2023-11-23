@@ -13,4 +13,12 @@ router.post('/manager', (req, res, next) =>
   new ManagerController(req, res, next).createOne()
 )
 
+router.post('/manager/login', (req, res, next) =>
+  new ManagerController(req, res, next).login()
+)
+
+router.post('/manager/verify', (req, res, next) =>
+  new ManagerController(req, res, next).verify()
+)
+
 export default router

@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import InvoiceService from '../services/InvoiceService'
-import { type IInvoiceCreateRequest, type IInvoiceReportCashierRequest } from '../interfaces'
+import { type IClientInvoicesRequest, type IInvoiceCreateRequest, type IInvoiceReportCashierRequest } from '../interfaces'
 
 class InvoiceController {
   private readonly request: Request
@@ -35,6 +35,23 @@ class InvoiceController {
         endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date()
       }
       const result = await this.service.getByCashier(invoiceRequest)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getByClientId (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const { startDate, endDate, limit } = this.request.query
+      const invoiceRequest: IClientInvoicesRequest = {
+        clientId: Number(id),
+        startDate: typeof startDate === 'string' ? new Date(startDate.toString()) : new Date(),
+        endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date(),
+        limit: typeof limit === 'string' ? Number(limit) : undefined
+      }
+      const result = await this.service.getByClientId(invoiceRequest)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)

@@ -5,17 +5,37 @@ import Manager from '../domains/user/Manager'
 import type IManager from '../interfaces/IManager'
 import type User from '../domains/user/User'
 import CustomError from '../utils/CustomError'
+import { type RequestLoginType } from '../interfaces'
+import JwtToken, { type JwtPayloadType } from '../utils/JwtToken'
 
 class ManagerServive extends UserService {
   private readonly prisma: PrismaClient
+  private readonly accessLevel: number
 
   constructor () {
     super()
     this.prisma = prisma
+    this.accessLevel = 0
   }
 
   protected createDomain (manager: IManager): User {
     return new Manager(manager)
+  }
+
+  public async login (payload: RequestLoginType): Promise<string> {
+    const client = await this.prisma.manager.findFirst({
+      where: {
+        user: {
+          code: payload.code,
+          password: payload.password
+        }
+      }
+    })
+    if (client === null) throw new CustomError('Forbidden', 403)
+    const jwtPayload: JwtPayloadType = { id: client.id, accessLevel: this.accessLevel }
+    const jwt = new JwtToken()
+    const token = jwt.generateToken(jwtPayload)
+    return token
   }
 
   public async getByUserId (userId: number): Promise<User | null> {
