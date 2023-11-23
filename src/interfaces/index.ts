@@ -71,3 +71,9 @@ export interface IClientInvoicesRequest {
   endDate: Date | string
   limit?: number
 }
+
+export interface IReceiptCreateRequest {
+  amount: number
+  clientId: number
+  methodId: number
+}
