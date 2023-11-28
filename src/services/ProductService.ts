@@ -3,7 +3,8 @@ import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
-import { type IUniqueInputUpdate } from '../interfaces'
+import { type IProductInvoicesRequest, type IUniqueInputUpdate } from '../interfaces'
+import Invoice from '../domains/Invoice'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -75,6 +76,41 @@ class ProductService {
       data: newProduct
     })
     const product = this.createDomain(productModel)
+    return product
+  }
+
+  public async getProductWithInvoices (request: IProductInvoicesRequest): Promise<Product> {
+    const productModel = await this.prisma.product.findUnique({
+      where: { id: request.productId },
+      include: {
+        invoice: {
+          where: {
+            invoice: {
+              saleDate: {
+                gte: new Date(request.startDate),
+                lte: new Date(request.endDate)
+              }
+            }
+          },
+          include: { invoice: true }
+        }
+      }
+    })
+    if (productModel === null) throw new CustomError('Not found', 404)
+    const product = this.createDomain({
+      id: productModel.id,
+      title: productModel.title,
+      price: productModel.price,
+      amount: productModel.amount,
+      barCode: productModel.barCode,
+      invoices: productModel.invoice.map((inv) => (
+        new Invoice({
+          id: inv.invoice.id,
+          value: inv.invoice.value,
+          saleDate: inv.invoice.saleDate
+        })
+      ))
+    })
     return product
   }
 }

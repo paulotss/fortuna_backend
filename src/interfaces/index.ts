@@ -83,3 +83,9 @@ export interface IReceiptMethodRequest {
   startDate: Date | string
   endDate: Date | string
 }
+
+export interface IProductInvoicesRequest {
+  productId: number
+  startDate: Date | string
+  endDate: Date | string
+}

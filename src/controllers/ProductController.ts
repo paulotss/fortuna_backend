@@ -74,6 +74,22 @@ class ProductController {
       this.next(error)
     }
   }
+
+  public async getProductWithInvoices (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const { startDate, endDate } = this.request.query
+      const request = {
+        productId: Number(id),
+        startDate: typeof startDate === 'string' ? new Date(startDate.toString()) : new Date(),
+        endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date()
+      }
+      const result = await this.service.getProductWithInvoices(request)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default ProductController
