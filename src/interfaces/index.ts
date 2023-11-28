@@ -77,3 +77,9 @@ export interface IReceiptCreateRequest {
   clientId: number
   methodId: number
 }
+
+export interface IReceiptMethodRequest {
+  methodId: number
+  startDate: Date | string
+  endDate: Date | string
+}

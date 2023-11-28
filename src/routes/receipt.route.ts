@@ -9,4 +9,8 @@ router.post('/receipt', (req, res, next) =>
   new ReceiptController(req, res, next).createOne()
 )
 
+router.get('/receipt/:id', (req, res, next) =>
+  new ReceiptController(req, res, next).getByMethod()
+)
+
 export default router

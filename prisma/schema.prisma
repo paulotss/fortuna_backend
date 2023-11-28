@@ -86,12 +86,13 @@ model Client {
 }
 
 model Receipts {
-  id       Int     @id @default(autoincrement())
-  amount   Decimal @db.Decimal(10, 2)
-  Client   Client  @relation(fields: [clientId], references: [id])
-  clientId Int
-  method   Method  @relation(fields: [methodId], references: [id])
-  methodId Int
+  id        Int      @id @default(autoincrement())
+  amount    Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  Client    Client   @relation(fields: [clientId], references: [id])
+  clientId  Int
+  method    Method   @relation(fields: [methodId], references: [id])
+  methodId  Int
 }
 
 model Method {
