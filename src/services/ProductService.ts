@@ -5,6 +5,7 @@ import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
 import { type IProductInvoicesRequest, type IUniqueInputUpdate } from '../interfaces'
 import Invoice from '../domains/Invoice'
+import Client from '../domains/user/Client'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -92,7 +93,7 @@ class ProductService {
               }
             }
           },
-          include: { invoice: true }
+          include: { invoice: { include: { client: { include: { user: true } } } } }
         }
       }
     })
@@ -107,7 +108,15 @@ class ProductService {
         new Invoice({
           id: inv.invoice.id,
           value: inv.invoice.value,
-          saleDate: inv.invoice.saleDate
+          saleDate: inv.invoice.saleDate,
+          client: new Client({
+            id: inv.invoice.client.id,
+            name: inv.invoice.client.user.name,
+            cellPhone: inv.invoice.client.user.cellPhone,
+            email: inv.invoice.client.user.email,
+            cpf: inv.invoice.client.cpf,
+            balance: inv.invoice.client.balance
+          })
         })
       ))
     })
