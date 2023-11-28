@@ -5,6 +5,7 @@ import type Method from '../domains/Method'
 interface IReceipt {
   id?: number
   amount: Decimal
+  createdAt: Date
   client?: Client
   method?: Method
 }

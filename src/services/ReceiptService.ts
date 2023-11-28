@@ -21,7 +21,8 @@ class ReceiptService {
     })
     const receipt = this.createDomain({
       id: receiptMethod.id,
-      amount: receiptMethod.amount
+      amount: receiptMethod.amount,
+      createdAt: receiptMethod.createdAt
     })
     return receipt
   }
@@ -36,7 +37,8 @@ class ReceiptService {
     const receipts = receiptModel.map((receipt) => (
       this.createDomain({
         id: receipt.id,
-        amount: receipt.amount
+        amount: receipt.amount,
+        createdAt: receipt.createdAt
       })
     ))
     return receipts
