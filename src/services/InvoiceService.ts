@@ -178,7 +178,8 @@ class InvoiceService {
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
         seller: { include: { user: { include: { branch: true, level: true } } } },
-        cashier: true
+        cashier: true,
+        products: { include: { product: true } }
       }
     })
     if (invoiceModel === null) throw new CustomError('Not found', 404)

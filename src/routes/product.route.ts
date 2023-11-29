@@ -21,6 +21,10 @@ router.get('/products/search', (req, res, next) =>
   new ProductController(req, res, next).getByTitle()
 )
 
+router.get('/product/invoice/:id', (req, res, next) =>
+  new ProductController(req, res, next).getProductsOfInvoice()
+)
+
 router.put('/product', (req, res, next) =>
   new ProductController(req, res, next).updateUniqueInput()
 )
