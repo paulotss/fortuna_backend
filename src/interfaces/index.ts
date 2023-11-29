@@ -1,3 +1,4 @@
+import { type Decimal } from '@prisma/client/runtime/library'
 import type IInvoice from './IInvoice'
 
 export interface RequestLoginType {
@@ -84,8 +85,8 @@ export interface IReceiptMethodRequest {
   endDate: Date | string
 }
 
-export interface IProductInvoicesRequest {
-  productId: number
-  startDate: Date | string
-  endDate: Date | string
+export interface IInvoicesToProductResponse {
+  amount: number
+  value: Decimal
+  saleDate: Date
 }

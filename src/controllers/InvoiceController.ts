@@ -67,6 +67,16 @@ class InvoiceController {
       this.next(error)
     }
   }
+
+  public async getInvoicesOfProduct (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const result = await this.service.getInvoicesOfProduct(Number(id))
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default InvoiceController

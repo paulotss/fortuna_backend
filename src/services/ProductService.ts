@@ -3,9 +3,7 @@ import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
-import { type IProductInvoicesRequest, type IUniqueInputUpdate } from '../interfaces'
-import Invoice from '../domains/Invoice'
-import Client from '../domains/user/Client'
+import { type IUniqueInputUpdate } from '../interfaces'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -77,49 +75,6 @@ class ProductService {
       data: newProduct
     })
     const product = this.createDomain(productModel)
-    return product
-  }
-
-  public async getProductWithInvoices (request: IProductInvoicesRequest): Promise<Product> {
-    const productModel = await this.prisma.product.findUnique({
-      where: { id: request.productId },
-      include: {
-        invoice: {
-          where: {
-            invoice: {
-              saleDate: {
-                gte: new Date(request.startDate),
-                lte: new Date(request.endDate)
-              }
-            }
-          },
-          include: { invoice: { include: { client: { include: { user: true } } } } }
-        }
-      }
-    })
-    if (productModel === null) throw new CustomError('Not found', 404)
-    const product = this.createDomain({
-      id: productModel.id,
-      title: productModel.title,
-      price: productModel.price,
-      amount: productModel.amount,
-      barCode: productModel.barCode,
-      invoices: productModel.invoice.map((inv) => (
-        new Invoice({
-          id: inv.invoice.id,
-          value: inv.invoice.value,
-          saleDate: inv.invoice.saleDate,
-          client: new Client({
-            id: inv.invoice.client.id,
-            name: inv.invoice.client.user.name,
-            cellPhone: inv.invoice.client.user.cellPhone,
-            email: inv.invoice.client.user.email,
-            cpf: inv.invoice.client.cpf,
-            balance: inv.invoice.client.balance
-          })
-        })
-      ))
-    })
     return product
   }
 }
