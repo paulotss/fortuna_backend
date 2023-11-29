@@ -238,10 +238,23 @@ class InvoiceService {
           }
         }
       },
-      include: { invoice: true }
+      include: { invoice: { include: { client: { include: { user: true } } } } }
     })
     const result = invoicesIds.map((itp) => (
-      { amount: itp.amount, value: itp.value, saleDate: itp.invoice.saleDate }
+      {
+        invoiceId: itp.invoiceId,
+        amount: itp.amount,
+        value: itp.value,
+        saleDate: itp.invoice.saleDate,
+        client: new Client({
+          id: itp.invoice.clientId,
+          name: itp.invoice.client.user.name,
+          cellPhone: itp.invoice.client.user.cellPhone,
+          email: itp.invoice.client.user.email,
+          cpf: itp.invoice.client.cpf,
+          balance: itp.invoice.client.balance
+        })
+      }
     ))
     return result
   }
