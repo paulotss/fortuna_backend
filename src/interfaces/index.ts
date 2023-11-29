@@ -90,3 +90,9 @@ export interface IInvoicesToProductResponse {
   value: Decimal
   saleDate: Date
 }
+
+export interface IInvoicesToProductRequest {
+  productId: number
+  startDate: Date | string
+  endDate: Date | string
+}

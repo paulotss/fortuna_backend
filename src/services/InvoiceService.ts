@@ -1,5 +1,5 @@
 import Invoice from '../domains/Invoice'
-import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest, type IClientInvoicesRequest, type IInvoicesToProductResponse } from '../interfaces'
+import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest, type IClientInvoicesRequest, type IInvoicesToProductResponse, type IInvoicesToProductRequest } from '../interfaces'
 import type IInvoice from '../interfaces/IInvoice'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
@@ -227,9 +227,17 @@ class InvoiceService {
     return invoice
   }
 
-  public async getInvoicesOfProduct (productId: number): Promise<IInvoicesToProductResponse[]> {
+  public async getInvoicesOfProduct (request: IInvoicesToProductRequest): Promise<IInvoicesToProductResponse[]> {
     const invoicesIds = await this.prisma.invoiceToProduct.findMany({
-      where: { productId },
+      where: {
+        productId: request.productId,
+        invoice: {
+          saleDate: {
+            gte: request.startDate,
+            lte: request.endDate
+          }
+        }
+      },
       include: { invoice: true }
     })
     const result = invoicesIds.map((itp) => (
