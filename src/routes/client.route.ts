@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 import ClientController from '../controllers/ClientController'
+import AuthHandle from '../middlewares/AuthHandle'
 
 const router = Router()
 
@@ -29,8 +30,9 @@ router.get('/client/invoice/:id', (req, res, next) =>
   new ClientController(req, res, next).getByIdWithInvoices()
 )
 
-router.put('/client', (req, res, next) =>
-  new ClientController(req, res, next).updateUniqueInput()
+router.put('/client',
+  (req, res, next) => new AuthHandle([0]).authVerify(req, res, next),
+  (req, res, next) => new ClientController(req, res, next).updateUniqueInput()
 )
 
 router.post('/client', (req, res, next) =>

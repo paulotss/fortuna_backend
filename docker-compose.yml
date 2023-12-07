@@ -20,6 +20,7 @@ services:
     container_name: fortuna_db
     ports:
       - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-
+    volumes:
+      - dbvolume:/var/lib/mysql
+volumes:
+  dbvolume:
