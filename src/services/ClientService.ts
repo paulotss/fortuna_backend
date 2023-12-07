@@ -44,8 +44,8 @@ class ClientService extends UserService {
 
   public async createOne (newClient: IClientCreateRequest): Promise<User> {
     newClient.balance = 0
-    newClient.password = '123456'
-    newClient.code = newClient.cpf.slice(0, 4)
+    newClient.password = this.generatePass()
+    newClient.code = newClient.cpf.substring(0, 4)
 
     const existCpf = await this.prisma.client.findFirst({
       where: { cpf: newClient.cpf }

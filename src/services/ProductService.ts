@@ -3,7 +3,7 @@ import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
-import { type IUniqueInputUpdate } from '../interfaces'
+import { type IProductToInvoicesResponse, type IUniqueInputUpdate } from '../interfaces'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -76,6 +76,21 @@ class ProductService {
     })
     const product = this.createDomain(productModel)
     return product
+  }
+
+  public async getProductsOfInvoice (invoiceId: number): Promise<IProductToInvoicesResponse[]> {
+    const model = await this.prisma.invoiceToProduct.findMany({
+      where: { invoiceId },
+      include: { product: true }
+    })
+    const result = model.map((m) => (
+      {
+        amount: m.amount,
+        value: m.value,
+        product: this.createDomain(m.product)
+      }
+    ))
+    return result
   }
 }
 

@@ -1,5 +1,6 @@
 import { type Decimal } from '@prisma/client/runtime/library'
 import type IProduct from '../interfaces/IProduct'
+import type Invoice from './Invoice'
 
 class Product {
   private id: number | undefined
@@ -7,6 +8,7 @@ class Product {
   private price: Decimal
   private amount: number
   private barCode: string
+  private invoices: Invoice[] | undefined
 
   constructor (product: IProduct) {
     this.id = product.id
@@ -14,6 +16,7 @@ class Product {
     this.price = product.price
     this.amount = product.amount
     this.barCode = product.barCode
+    this.invoices = product.invoices
   }
 
   public getId (): number | undefined {
@@ -54,6 +57,14 @@ class Product {
 
   public setBarCode (barCode: string): void {
     this.barCode = barCode
+  }
+
+  public getInvoices (): Invoice[] | undefined {
+    return this.invoices
+  }
+
+  public setInvoices (invoices: Invoice[]): void {
+    this.invoices = invoices
   }
 }
 

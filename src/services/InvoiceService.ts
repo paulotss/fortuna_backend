@@ -1,5 +1,5 @@
 import Invoice from '../domains/Invoice'
-import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest, type IClientInvoicesRequest } from '../interfaces'
+import { type IInvoiceReportCashierRequest, type IInvoiceCreateRequest, type IClientInvoicesRequest, type IInvoicesToProductResponse, type IInvoicesToProductRequest } from '../interfaces'
 import type IInvoice from '../interfaces/IInvoice'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
@@ -178,7 +178,8 @@ class InvoiceService {
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
         seller: { include: { user: { include: { branch: true, level: true } } } },
-        cashier: true
+        cashier: true,
+        products: { include: { product: true } }
       }
     })
     if (invoiceModel === null) throw new CustomError('Not found', 404)
@@ -225,6 +226,38 @@ class InvoiceService {
       })
     })
     return invoice
+  }
+
+  public async getInvoicesOfProduct (request: IInvoicesToProductRequest): Promise<IInvoicesToProductResponse[]> {
+    const invoicesIds = await this.prisma.invoiceToProduct.findMany({
+      where: {
+        productId: request.productId,
+        invoice: {
+          saleDate: {
+            gte: request.startDate,
+            lte: request.endDate
+          }
+        }
+      },
+      include: { invoice: { include: { client: { include: { user: true } } } } }
+    })
+    const result = invoicesIds.map((itp) => (
+      {
+        invoiceId: itp.invoiceId,
+        amount: itp.amount,
+        value: itp.value,
+        saleDate: itp.invoice.saleDate,
+        client: new Client({
+          id: itp.invoice.clientId,
+          name: itp.invoice.client.user.name,
+          cellPhone: itp.invoice.client.user.cellPhone,
+          email: itp.invoice.client.user.email,
+          cpf: itp.invoice.client.cpf,
+          balance: itp.invoice.client.balance
+        })
+      }
+    ))
+    return result
   }
 }
 

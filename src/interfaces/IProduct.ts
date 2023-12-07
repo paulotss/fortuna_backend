@@ -1,4 +1,5 @@
 import { type Decimal } from '@prisma/client/runtime/library'
+import type Invoice from '../domains/Invoice'
 
 interface IProduct {
   id?: number
@@ -6,6 +7,7 @@ interface IProduct {
   price: Decimal
   amount: number
   barCode: string
+  invoices?: Invoice[]
 }
 
 export default IProduct

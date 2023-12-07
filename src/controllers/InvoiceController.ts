@@ -67,6 +67,22 @@ class InvoiceController {
       this.next(error)
     }
   }
+
+  public async getInvoicesOfProduct (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const { startDate, endDate } = this.request.query
+      const invoiceRequest = {
+        productId: Number(id),
+        startDate: typeof startDate === 'string' ? new Date(startDate.toString()) : new Date(),
+        endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date()
+      }
+      const result = await this.service.getInvoicesOfProduct(invoiceRequest)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default InvoiceController

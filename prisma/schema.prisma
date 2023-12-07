@@ -75,13 +75,30 @@ model Product {
 }
 
 model Client {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  cpf       String    @db.VarChar(11)
-  balance   Decimal   @db.Decimal(10, 2)
-  user      User      @relation(fields: [userId], references: [id])
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  cpf       String     @db.VarChar(11)
+  balance   Decimal    @db.Decimal(10, 2)
+  user      User       @relation(fields: [userId], references: [id])
   userId    Int
   invoice   Invoice[]
+  receipts  Receipts[]
+}
+
+model Receipts {
+  id        Int      @id @default(autoincrement())
+  amount    Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  Client    Client   @relation(fields: [clientId], references: [id])
+  clientId  Int
+  method    Method   @relation(fields: [methodId], references: [id])
+  methodId  Int
+}
+
+model Method {
+  id       Int        @id @default(autoincrement())
+  title    String     @db.VarChar(45)
+  Receipts Receipts[]
 }
 
 model Manager {

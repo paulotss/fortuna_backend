@@ -115,6 +115,58 @@ async function main (): Promise<void> {
     }
   })
 
+  const method1 = await prisma.method.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      title: 'Dinheiro'
+    }
+  })
+
+  const method2 = await prisma.method.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      title: 'Débito'
+    }
+  })
+
+  const method3 = await prisma.method.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      title: 'Crédito'
+    }
+  })
+
+  const method4 = await prisma.method.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      title: 'PIX'
+    }
+  })
+
+  const receipt1 = await prisma.receipts.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      amount: 50,
+      clientId: 1,
+      methodId: 1
+    }
+  })
+
+  const receipt2 = await prisma.receipts.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      amount: 100,
+      clientId: 2,
+      methodId: 2
+    }
+  })
+
   const cashier1 = await prisma.cashier.upsert({
     where: { id: 1 },
     update: {},
@@ -190,6 +242,12 @@ async function main (): Promise<void> {
     manager1,
     client1,
     client2,
+    method1,
+    method2,
+    method3,
+    method4,
+    receipt1,
+    receipt2,
     cashier1,
     product1,
     product2,

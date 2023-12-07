@@ -9,6 +9,8 @@ import levelRouter from './routes/level.router'
 import expenseRouter from './routes/expense.route'
 import lossRouter from './routes/loss.route'
 import managerRouter from './routes/manager.route'
+import receiptRouter from './routes/receipt.route'
+import methodRouter from './routes/method.route'
 import ErrorHandle from './middlewares/ErrorHandle'
 import cors from 'cors'
 
@@ -27,6 +29,8 @@ app.use(levelRouter)
 app.use(expenseRouter)
 app.use(lossRouter)
 app.use(managerRouter)
+app.use(receiptRouter)
+app.use(methodRouter)
 
 app.use(ErrorHandle.handle)
 
