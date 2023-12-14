@@ -25,6 +25,10 @@ router.get('/product/invoice/:id', (req, res, next) =>
   new ProductController(req, res, next).getProductsOfInvoice()
 )
 
+router.get('/product/barcode/:code', (req, res, next) =>
+  new ProductController(req, res, next).getByBarCode()
+)
+
 router.put('/product', (req, res, next) =>
   new ProductController(req, res, next).updateUniqueInput()
 )
