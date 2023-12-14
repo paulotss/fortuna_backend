@@ -153,6 +153,40 @@ class ClientService extends UserService {
     return clients
   }
 
+  public async getByCpf (request: string): Promise<User> {
+    const clientModel = await this.prisma.client.findFirst({
+      where: {
+        cpf: request
+      },
+      include: {
+        user: {
+          include: { branch: true, level: true }
+        }
+      }
+    })
+    if (clientModel === null) throw new CustomError('Not Found', 404)
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      code: clientModel.user.code,
+      password: clientModel.user.password,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      branch: new Branch({
+        id: clientModel.user.branch.id,
+        title: clientModel.user.branch.title
+      }),
+      level: new Level({
+        id: clientModel.user.level.id,
+        title: clientModel.user.level.title,
+        acronym: clientModel.user.level.acronym
+      }),
+      cpf: clientModel.cpf,
+      balance: clientModel.balance
+    })
+    return client
+  }
+
   public async getAll (): Promise<User[]> {
     const clientsModels = await this.prisma.client.findMany({
       include: { user: { include: { branch: true, level: true } } }

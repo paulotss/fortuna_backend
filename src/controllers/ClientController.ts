@@ -76,6 +76,16 @@ class ClientController {
     }
   }
 
+  public async getByCpf (): Promise<void> {
+    try {
+      const { cpf } = this.request.params
+      const result = await this.service.getByCpf(cpf)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
   public async getByIdWithInvoices (): Promise<void> {
     try {
       const { id } = this.request.params
