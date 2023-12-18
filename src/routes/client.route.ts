@@ -30,6 +30,10 @@ router.get('/client/invoice/:id', (req, res, next) =>
   new ClientController(req, res, next).getByIdWithInvoices()
 )
 
+router.get('/client/search/cpf/:cpf', (req, res, next) =>
+  new ClientController(req, res, next).getByCpf()
+)
+
 router.put('/client',
   (req, res, next) => new AuthHandle([0]).authVerify(req, res, next),
   (req, res, next) => new ClientController(req, res, next).updateUniqueInput()

@@ -61,6 +61,15 @@ class ProductService {
     return products
   }
 
+  public async getByBarCode (request: string): Promise<Product> {
+    const productModel = await this.prisma.product.findFirst({
+      where: { barCode: request }
+    })
+    if (productModel === null) throw new CustomError('Not Found', 404)
+    const product = this.createDomain(productModel)
+    return product
+  }
+
   public async updateUniqueInput (request: IUniqueInputUpdate): Promise<Product> {
     const productModel = await this.prisma.product.update({
       where: { id: request.itemId },

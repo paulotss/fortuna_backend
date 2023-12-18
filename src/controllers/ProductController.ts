@@ -84,6 +84,16 @@ class ProductController {
       this.next(error)
     }
   }
+
+  public async getByBarCode (): Promise<void> {
+    try {
+      const { code } = this.request.params
+      const result = await this.service.getByBarCode(code)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default ProductController
