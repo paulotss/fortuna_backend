@@ -32,7 +32,7 @@ class SellerService extends UserService {
       }
     })
     if (seller === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { id: seller.id, accessLevel: this.accessLevel }
+    const jwtPayload: JwtPayloadType = { id: seller.userId, accessLevel: this.accessLevel }
     const jwt = new JwtToken()
     const token = jwt.generateToken(jwtPayload)
     return token

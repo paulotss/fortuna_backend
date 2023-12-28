@@ -23,7 +23,7 @@ class ManagerServive extends UserService {
   }
 
   public async login (payload: RequestLoginType): Promise<string> {
-    const client = await this.prisma.manager.findFirst({
+    const manager = await this.prisma.manager.findFirst({
       where: {
         user: {
           code: payload.code,
@@ -31,8 +31,8 @@ class ManagerServive extends UserService {
         }
       }
     })
-    if (client === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { id: client.id, accessLevel: this.accessLevel }
+    if (manager === null) throw new CustomError('Forbidden', 403)
+    const jwtPayload: JwtPayloadType = { id: manager.userId, accessLevel: this.accessLevel }
     const jwt = new JwtToken()
     const token = jwt.generateToken(jwtPayload)
     return token
