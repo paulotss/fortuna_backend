@@ -32,7 +32,7 @@ class ManagerServive extends UserService {
       }
     })
     if (manager === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { id: manager.userId, accessLevel: this.accessLevel }
+    const jwtPayload: JwtPayloadType = { id: manager.id, accessLevel: this.accessLevel }
     const jwt = new JwtToken()
     const token = jwt.generateToken(jwtPayload)
     return token

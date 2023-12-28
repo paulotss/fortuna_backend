@@ -36,7 +36,7 @@ class ClientService extends UserService {
       }
     })
     if (client === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { id: client.userId, accessLevel: this.accessLevel }
+    const jwtPayload: JwtPayloadType = { id: client.id, accessLevel: this.accessLevel }
     const jwt = new JwtToken()
     const token = jwt.generateToken(jwtPayload)
     return token

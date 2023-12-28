@@ -32,10 +32,12 @@ class AuthHandle {
     }
   }
 
-  public async authVerifyClient (userId: number): Promise<Response | null> {
+  public async authVerifyClient (id: number): Promise<Response | null> {
     try {
       const payload = await this.getPayload()
-      if (userId !== payload.id) throw new Error()
+      if (payload.accessLevel === 2) {
+        if (id !== payload.id) throw new Error()
+      }
       this.next()
       return null
     } catch (error) {

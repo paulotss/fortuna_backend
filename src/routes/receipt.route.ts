@@ -12,6 +12,7 @@ router.post('/receipt',
 )
 
 router.get('/receipt/:id',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
   (req, res, next) => new ReceiptController(req, res, next).getByMethod()
 )
 

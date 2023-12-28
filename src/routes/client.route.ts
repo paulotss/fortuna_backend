@@ -14,24 +14,30 @@ router.post('/client/verify', (req, res, next) =>
   new ClientController(req, res, next).verify()
 )
 
-router.get('/client/:id', (req, res, next) =>
-  new ClientController(req, res, next).getById()
+router.get('/client/:id',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyClient(Number(req.params.id)),
+  (req, res, next) => new ClientController(req, res, next).getById()
 )
 
-router.get('/clients', (req, res, next) =>
-  new ClientController(req, res, next).getAll()
+router.get('/clients',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new ClientController(req, res, next).getAll()
 )
 
-router.get('/clients/search', (req, res, next) =>
-  new ClientController(req, res, next).getByName()
+router.get('/clients/search',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new ClientController(req, res, next).getByName()
 )
 
-router.get('/client/invoice/:id', (req, res, next) =>
-  new ClientController(req, res, next).getByIdWithInvoices()
+router.get('/client/invoice/:id',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new ClientController(req, res, next).getByIdWithInvoices()
 )
 
-router.get('/client/search/cpf/:cpf', (req, res, next) =>
-  new ClientController(req, res, next).getByCpf()
+router.get('/client/search/cpf/:cpf',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new ClientController(req, res, next).getByCpf()
 )
 
 router.put('/client',
@@ -39,8 +45,9 @@ router.put('/client',
   (req, res, next) => new ClientController(req, res, next).updateUniqueInput()
 )
 
-router.post('/client', (req, res, next) =>
-  new ClientController(req, res, next).createOne()
+router.post('/client',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
+  (req, res, next) => new ClientController(req, res, next).createOne()
 )
 
 export default router
