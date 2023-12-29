@@ -34,7 +34,7 @@ Preferencialmente utilize o docker junto com docker-compose para rodar a aplica�
 docker-compose up -d
 ```
 
-Com isso, você já vai rodando o banco de dados. Agora basta entra no container do back-end e rodar o servidor express:
+Com isso o banco de dados já vai estar rodando. Agora basta entra no container do back-end e rodar o servidor express:
 
 ```
 docker exec -it fortuna_back bash
