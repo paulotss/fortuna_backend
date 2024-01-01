@@ -16,7 +16,9 @@ build:
   stage: build
   script:
     - npm i
-    - npx prisma generate
+  artifacts:
+    paths:
+      - node_modules
 
 docker:
   image: docker:latest
