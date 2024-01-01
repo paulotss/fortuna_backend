@@ -73,11 +73,3 @@ spec:
                 name: fortuna
             - secretRef:
                 name: fortuna
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http

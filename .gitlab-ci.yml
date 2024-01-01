@@ -55,7 +55,6 @@ deploy:
     kubectl config set-context thecontext --cluster=thecluster --user=theuser
     kubectl config use-context thecontext
     cat ./kube/all.yaml | sed "s/{{TAG}}/${CI_COMMIT_SHA:0:8}/g" | sed "s/{{JOB_ID}}/$CI_JOB_ID/g" | kubectl apply -f -
-    kubectl apply -f ./kube/all.yaml
     kubectl rollout status deployment.v1.apps/fortunaback || (kubectl describe pod -l jobid=$CI_JOB_ID && kubectl logs --tail=10000 -l jobid=$CI_JOB_ID && exit 1)
   }
 
