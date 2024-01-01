@@ -1,0 +1,7 @@
+FROM node
+WORKDIR /app
+COPY . .
+RUN chown node:node /app
+#USER node
+EXPOSE 3001
+CMD npx prisma migrate deploy; npm run dev

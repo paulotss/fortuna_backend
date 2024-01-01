@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fortuna
+data:
+  PORT: 3001
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fortunaback
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - fortuna.acropolebrasil.com.br
+  rules:
+    - host: fortuna.acropolebrasil.com.br
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fortunaback
+                port:
+                  name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortunaback
+spec:
+  selector:
+    app: fortunaback
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80 #porta interna
+      targetPort: http # porta da aplicação
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortunaback
+
+#ESPECIFICAÇÃO DAS REPLICAS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortunaback
+
+  #ESPECIFICAÇÃO DO POD
+  template:
+    metadata:
+      labels:
+        app: fortunaback
+        jobid: "{{JOB_ID}}"
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: fortunaback
+          image: registry.gitlab.com/novaacropole/fortuna_backend:{{TAG}}
+          ports:
+            - name: http
+              containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: fortuna
+            - secretRef:
+                name: fortuna
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http

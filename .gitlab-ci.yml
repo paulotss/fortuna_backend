@@ -1,0 +1,61 @@
+variables:
+  ORG: novaacropole
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  IMAGE: $CI_REGISTRY/$ORG/fortuna_backend
+
+stages:
+  - build
+  - docker
+  - deploy
+
+# -------- BUILD ---------
+
+build:
+  image: node
+  stage: build
+  script:
+    - npm i
+    - npx prisma generate
+
+docker:
+  image: docker:latest
+  stage: docker
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+    - when: manual
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -f DockerfileKube -t $IMAGE:${CI_COMMIT_SHA:0:8} .
+    - docker push --all-tags $IMAGE
+
+deploy:
+  image: dtzar/helm-kubectl
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: manual
+  script:
+    - deploy
+
+#---------------------------------------------------------------------------
+
+.functions: &functions |
+
+  function deploy() {
+    echo $KUBE_CA | base64 -d > ./kube_ca
+    kubectl config set-cluster thecluster --server=$KUBE_URL --certificate-authority="$(pwd)/kube_ca"
+    kubectl config set-credentials theuser --token=$KUBE_TOKEN
+    kubectl config set-context thecontext --cluster=thecluster --user=theuser
+    kubectl config use-context thecontext
+    cat ./kube/all.yaml | sed "s/{{TAG}}/${CI_COMMIT_SHA:0:8}/g" | sed "s/{{JOB_ID}}/$CI_JOB_ID/g" | kubectl apply -f -
+    kubectl apply -f ./kube/all.yaml
+    kubectl rollout status deployment.v1.apps/fortunaback || (kubectl describe pod -l jobid=$CI_JOB_ID && kubectl logs --tail=10000 -l jobid=$CI_JOB_ID && exit 1)
+  }
+
+before_script:
+  - *functions
