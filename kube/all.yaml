@@ -15,9 +15,9 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - fortuna.acropolebrasil.com.br
+        - fortunaback.acropolebrasil.com.br
   rules:
-    - host: fortuna.acropolebrasil.com.br
+    - host: fortunaback.acropolebrasil.com.br
       http:
         paths:
           - path: /
