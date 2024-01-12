@@ -3,20 +3,65 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main (): Promise<void> {
-  const branch1 = await prisma.branch.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      title: 'Taguatinga'
-    }
-  })
-
-  const branch2 = await prisma.branch.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      title: 'Ceilândia'
-    }
+  const branchs = await prisma.branch.createMany({
+    data: [
+      { title: 'Águas Claras' },
+      { title: 'Anápolis' },
+      { title: 'Araguaina' },
+      { title: 'Asa Sul' },
+      { title: 'Barra Do Garças' },
+      { title: 'Belém' },
+      { title: 'Belem Ananindeua' },
+      { title: 'Boa Vista' },
+      { title: 'Brasília' },
+      { title: 'Asa Norte' },
+      { title: 'Samambaia' },
+      { title: 'Campina Grande' },
+      { title: 'Campo Novo Do Parecis' },
+      { title: 'Catalão' },
+      { title: 'Ceilândia' },
+      { title: 'Cuiabá' },
+      { title: 'Fortaleza Dionisio Torres' },
+      { title: 'Fortaleza Fátima' },
+      { title: 'Fortaleza Meireles' },
+      { title: 'Fortaleza Sul' },
+      { title: 'Gama' },
+      { title: 'Goiania Alto Da Gloria' },
+      { title: 'Goiânia Eldorado' },
+      { title: 'Goiania Garavelo' },
+      { title: 'Goiania Itumbiara' },
+      { title: 'Goiania Jardim América' },
+      { title: 'Goiania Perimetral Norte' },
+      { title: 'Goiânia Universitario' },
+      { title: 'Guará' },
+      { title: 'João Pessoa' },
+      { title: 'Lago Sul' },
+      { title: 'Macapá' },
+      { title: 'Manaus' },
+      { title: 'Mossoró' },
+      { title: 'Natal Morro Branco' },
+      { title: 'Natal Petropolis' },
+      { title: 'Natal Ponta Negra' },
+      { title: 'Natal Zona Norte' },
+      { title: 'Nova Parnamirim' },
+      { title: 'Palmas' },
+      { title: 'Petrolina' },
+      { title: 'Porto Velho' },
+      { title: 'Recife Boa Viagem' },
+      { title: 'Recife Caruaru' },
+      { title: 'Recife Derby' },
+      { title: 'Rio Verde' },
+      { title: 'Rondonópolis' },
+      { title: 'São Luis' },
+      { title: 'Sao Luis Angelim' },
+      { title: 'Senador Canedo' },
+      { title: 'Sinop' },
+      { title: 'Sobradinho' },
+      { title: 'Sorriso' },
+      { title: 'Sudoeste' },
+      { title: 'Taguatinga' },
+      { title: 'Teresina' }
+    ]
   })
 
   const level1 = await prisma.level.upsert({
@@ -42,39 +87,11 @@ async function main (): Promise<void> {
     update: {},
     create: {
       name: 'Paulo de Tarso',
-      code: '001',
+      code: '0001',
       password: '123456',
       email: 'paulo.oinab@gmail.com',
       cellPhone: '61988585218',
-      branchId: 1,
-      levelId: 1
-    }
-  })
-
-  const user2 = await prisma.user.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      name: 'Raquel Álvares',
-      code: '002',
-      password: '123456',
-      email: 'raquel.alvares@gmail.com',
-      cellPhone: '61981285134',
-      branchId: 1,
-      levelId: 1
-    }
-  })
-
-  const user3 = await prisma.user.upsert({
-    where: { id: 3 },
-    update: {},
-    create: {
-      name: 'Marco Aurélio',
-      code: '003',
-      password: '123456',
-      email: 'marco.tf2@gmail.com',
-      cellPhone: '61123456789',
-      branchId: 1,
+      branchId: 55,
       levelId: 1
     }
   })
@@ -99,18 +116,8 @@ async function main (): Promise<void> {
     where: { id: 1 },
     update: {},
     create: {
-      userId: 2,
-      cpf: '12345678910',
-      balance: 50
-    }
-  })
-
-  const client2 = await prisma.client.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      userId: 3,
-      cpf: '12345678910',
+      userId: 1,
+      cpf: '01810755123',
       balance: 100
     }
   })
@@ -147,26 +154,6 @@ async function main (): Promise<void> {
     }
   })
 
-  const receipt1 = await prisma.receipts.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      amount: 50,
-      clientId: 1,
-      methodId: 1
-    }
-  })
-
-  const receipt2 = await prisma.receipts.upsert({
-    where: { id: 2 },
-    update: {},
-    create: {
-      amount: 100,
-      clientId: 2,
-      methodId: 2
-    }
-  })
-
   const cashier1 = await prisma.cashier.upsert({
     where: { id: 1 },
     update: {},
@@ -182,7 +169,7 @@ async function main (): Promise<void> {
       title: 'Cerveja Heneiken',
       price: 8,
       amount: 50,
-      barCode: '123456789'
+      barCode: '7896045506873'
     }
   })
 
@@ -192,8 +179,8 @@ async function main (): Promise<void> {
     create: {
       title: 'Cerveja Original',
       price: 7,
-      amount: 80,
-      barCode: '123456789'
+      amount: 50,
+      barCode: '7891991015493'
     }
   })
 
@@ -201,59 +188,29 @@ async function main (): Promise<void> {
     where: { id: 3 },
     update: {},
     create: {
-      title: 'Cerveja Colorado',
-      price: 10,
-      amount: 30,
-      barCode: '123456789'
-    }
-  })
-
-  const expense1 = await prisma.expense.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      amount: 5,
-      value: 15.60,
-      launchDate: '2023-10-30T12:00:00.000Z',
-      productId: 3
-    }
-  })
-
-  const loss1 = await prisma.loss.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-      amount: 5,
-      description: 'Danificado',
-      createAt: '2023-10-30T12:00:00.000Z',
-      productId: 3
+      title: 'Cerveja Spaten',
+      price: 7,
+      amount: 50,
+      barCode: '7891991297424'
     }
   })
 
   console.log({
-    branch1,
-    branch2,
+    branchs,
     level1,
     level2,
     user1,
-    user2,
-    user3,
     seller1,
     manager1,
     client1,
-    client2,
     method1,
     method2,
     method3,
     method4,
-    receipt1,
-    receipt2,
     cashier1,
     product1,
     product2,
-    product3,
-    expense1,
-    loss1
+    product3
   })
 }
 
