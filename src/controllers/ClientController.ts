@@ -112,6 +112,16 @@ class ClientController {
       this.next(error)
     }
   }
+
+  public async changePass (): Promise<void> {
+    try {
+      const { clientId, newPass, oldPass } = this.request.body
+      const result = await this.service.changePass(Number(clientId), newPass, oldPass)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default ClientController

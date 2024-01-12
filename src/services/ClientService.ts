@@ -44,7 +44,7 @@ class ClientService extends UserService {
 
   public async createOne (newClient: IClientCreateRequest): Promise<User> {
     newClient.balance = 0
-    newClient.password = this.generatePass()
+    newClient.password = '335577'
     newClient.code = newClient.cpf.substring(0, 4)
 
     const existCpf = await this.prisma.client.findFirst({
@@ -262,6 +262,34 @@ class ClientService extends UserService {
       },
       include: { user: { include: { branch: true, level: true } } },
       data
+    })
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      code: clientModel.user.code,
+      password: clientModel.user.password,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      branch: new Branch({
+        id: clientModel.user.branch.id,
+        title: clientModel.user.branch.title
+      }),
+      level: new Level({
+        id: clientModel.user.level.id,
+        title: clientModel.user.level.title,
+        acronym: clientModel.user.level.acronym
+      }),
+      cpf: clientModel.cpf,
+      balance: clientModel.balance
+    })
+    return client
+  }
+
+  public async changePass (clientId: number, newPass: string, oldPass: string): Promise<User> {
+    const clientModel = await this.prisma.client.update({
+      where: { id: clientId, user: { password: oldPass } },
+      data: { user: { update: { password: newPass } } },
+      include: { user: { include: { branch: true, level: true } } }
     })
     const client = this.createDomain({
       id: clientModel.id,

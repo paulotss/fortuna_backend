@@ -20,6 +20,12 @@ router.get('/client/:id',
   (req, res, next) => new ClientController(req, res, next).getById()
 )
 
+router.put('/client/passchange',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyClient(Number(req.body.id)),
+  (req, res, next) => new ClientController(req, res, next).changePass()
+)
+
 router.get('/clients',
   (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
   (req, res, next) => new ClientController(req, res, next).getAll()
