@@ -7,22 +7,22 @@ import AuthHandle from '../middlewares/AuthHandle'
 const router = Router()
 
 router.post('/invoice',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4]),
   (req, res, next) => new InvoiceController(req, res, next).createOne()
 )
 
 router.get('/invoice/cashier/:cashierId',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4]),
   (req, res, next) => new InvoiceController(req, res, next).getByCashier()
 )
 
 router.get('/invoice/:id',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4, 5]),
   (req, res, next) => new InvoiceController(req, res, next).getById()
 )
 
 router.get('/invoice/client/:id',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4, 5]),
   (req, res, next) => new InvoiceController(req, res, next).getByClientId()
 )
 

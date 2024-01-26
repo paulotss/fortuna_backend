@@ -3,6 +3,7 @@ import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import Cashier from '../domains/Cashier'
 import CustomError from '../utils/CustomError'
+import { IUniqueInputUpdate } from '../interfaces'
 
 class CashierService {
   private readonly prisma: PrismaClient
@@ -37,13 +38,13 @@ class CashierService {
     return cashier
   }
 
-  public async updateOne (request: ICashier): Promise<Cashier> {
+  public async updateUniqueInput (request: IUniqueInputUpdate): Promise<Cashier> {
     const cashierModel = await this.prisma.cashier.update({
-      where: { id: request.id },
-      data: { title: request.title }
+      where: { id: request.itemId },
+      data: { [request.input]: request.value }
     })
-    const cashier = this.createDomain(cashierModel)
-    return cashier
+    const product = this.createDomain(cashierModel)
+    return product
   }
 }
 

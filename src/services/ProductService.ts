@@ -3,7 +3,7 @@ import type IProduct from '../interfaces/IProduct'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import CustomError from '../utils/CustomError'
-import { type IProductToInvoicesResponse, type IUniqueInputUpdate } from '../interfaces'
+import { type IProductToInvoicesResponse, type IUniqueInputUpdate, type IProductCreateRequest } from '../interfaces'
 
 class ProductService {
   private readonly prisma: PrismaClient
@@ -79,7 +79,7 @@ class ProductService {
     return product
   }
 
-  public async createOne (newProduct: IProduct): Promise<Product> {
+  public async createOne (newProduct: IProductCreateRequest): Promise<Product> {
     const productModel = await this.prisma.product.create({
       data: newProduct
     })

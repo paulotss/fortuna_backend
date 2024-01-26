@@ -3,23 +3,17 @@ import type User from '../domains/user/User'
 import type IClient from '../interfaces/IClient'
 import CustomError from '../utils/CustomError'
 import UserService from './UserService'
-import { type PrismaClient } from '@prisma/client'
-import prisma from '../utils/prisma'
 import { type IClientInvoicesRequest, type IClientCreateRequest, type IUniqueInputUpdate, type RequestLoginType } from '../interfaces'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
-import JwtToken, { type JwtPayloadType } from '../utils/JwtToken'
+import JwtToken, { type JwtPayloadClientType } from '../utils/JwtToken'
 import Invoice from '../domains/Invoice'
 import Cashier from '../domains/Cashier'
 
 class ClientService extends UserService {
-  private readonly prisma: PrismaClient
-  private readonly accessLevel: number
 
   constructor () {
     super()
-    this.prisma = prisma
-    this.accessLevel = 2
   }
 
   protected createDomain (client: IClient): User {
@@ -30,42 +24,41 @@ class ClientService extends UserService {
     const client = await this.prisma.client.findFirst({
       where: {
         user: {
-          code: payload.code,
+          email: payload.email,
           password: payload.password
         }
-      }
+      },
+      include: { user: true }
     })
     if (client === null) throw new CustomError('Forbidden', 403)
-    const jwtPayload: JwtPayloadType = { id: client.id, accessLevel: this.accessLevel }
+    const jwtPayload: JwtPayloadClientType = { id: client.id, name: client.user.name, roleId: 5 }
     const jwt = new JwtToken()
-    const token = jwt.generateToken(jwtPayload)
+    const token = jwt.generateTokenClient(jwtPayload)
     return token
   }
 
   public async createOne (newClient: IClientCreateRequest): Promise<User> {
     newClient.balance = 0
     newClient.password = '335577'
-    newClient.code = newClient.cpf.substring(0, 4)
 
     const existCpf = await this.prisma.client.findFirst({
-      where: { cpf: newClient.cpf }
+      where: { user: { email: newClient.email } }
     })
-    if (existCpf !== null) throw new CustomError('CPF already exist', 409)
+    if (existCpf !== null) throw new CustomError('Email already exist', 409)
 
     const clientModel = await this.prisma.client.create({
       include: { user: true },
       data: {
-        cpf: newClient.cpf,
         balance: newClient.balance,
         user: {
           create: {
             name: newClient.name,
-            code: newClient.code,
             password: newClient.password,
             email: newClient.email,
             cellPhone: newClient.cellPhone,
             branchId: newClient.branchId,
-            levelId: newClient.levelId
+            levelId: newClient.levelId,
+            admin: false
           }
         }
       }
@@ -74,12 +67,11 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
-      cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      admin: clientModel.user.admin
     })
 
     return client
@@ -96,7 +88,6 @@ class ClientService extends UserService {
     const client: User = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
@@ -109,9 +100,9 @@ class ClientService extends UserService {
         title: clientModel.user.level.title,
         acronym: clientModel.user.level.acronym
       }),
-      cpf: clientModel.cpf,
       balance: clientModel.balance,
-      userId: clientModel.userId
+      userId: clientModel.userId,
+      admin: clientModel.user.admin
     })
     await this.prisma.$disconnect()
     return client
@@ -133,7 +124,6 @@ class ClientService extends UserService {
       this.createDomain({
         id: client.id,
         name: client.user.name,
-        code: client.user.code,
         password: client.user.password,
         cellPhone: client.user.cellPhone,
         email: client.user.email,
@@ -146,17 +136,17 @@ class ClientService extends UserService {
           title: client.user.level.title,
           acronym: client.user.level.acronym
         }),
-        cpf: client.cpf,
-        balance: client.balance
+        balance: client.balance,
+        admin: client.user.admin
       })
     ))
     return clients
   }
 
-  public async getByCpf (request: string): Promise<User> {
+  public async getByEmail (request: string): Promise<User> {
     const clientModel = await this.prisma.client.findFirst({
       where: {
-        cpf: request
+        user: { email: request }
       },
       include: {
         user: {
@@ -168,7 +158,6 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
@@ -181,8 +170,8 @@ class ClientService extends UserService {
         title: clientModel.user.level.title,
         acronym: clientModel.user.level.acronym
       }),
-      cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      admin: true
     })
     return client
   }
@@ -195,7 +184,6 @@ class ClientService extends UserService {
       return this.createDomain({
         id: client.id,
         name: client.user.name,
-        code: client.user.code,
         password: client.user.password,
         cellPhone: client.user.cellPhone,
         email: client.user.email,
@@ -208,8 +196,8 @@ class ClientService extends UserService {
           title: client.user.level.title,
           acronym: client.user.level.acronym
         }),
-        cpf: client.cpf,
-        balance: client.balance
+        balance: client.balance,
+        admin: client.user.admin
       })
     })
     return clients
@@ -231,12 +219,11 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
-      cpf: clientModel.cpf,
       balance: clientModel.balance,
+      admin: clientModel.user.admin,
       invoices: clientModel.invoice.map((v) => (
         new Invoice({
           id: v.id,
@@ -266,7 +253,6 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
@@ -279,8 +265,8 @@ class ClientService extends UserService {
         title: clientModel.user.level.title,
         acronym: clientModel.user.level.acronym
       }),
-      cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      admin: clientModel.user.admin
     })
     return client
   }
@@ -294,7 +280,6 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      code: clientModel.user.code,
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
@@ -307,8 +292,8 @@ class ClientService extends UserService {
         title: clientModel.user.level.title,
         acronym: clientModel.user.level.acronym
       }),
-      cpf: clientModel.cpf,
-      balance: clientModel.balance
+      balance: clientModel.balance,
+      admin: clientModel.user.admin
     })
     return client
   }

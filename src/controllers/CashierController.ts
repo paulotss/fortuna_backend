@@ -43,10 +43,10 @@ class CashierController {
     }
   }
 
-  public async updateOne (): Promise<void> {
+  public async updateUniqueInput (): Promise<void> {
     try {
       const request = this.request.body
-      const result = await this.service.updateOne(request)
+      const result = await this.service.updateUniqueInput(request)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)

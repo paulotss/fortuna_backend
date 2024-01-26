@@ -76,10 +76,10 @@ class ClientController {
     }
   }
 
-  public async getByCpf (): Promise<void> {
+  public async getByEmail (): Promise<void> {
     try {
-      const { cpf } = this.request.params
-      const result = await this.service.getByCpf(cpf)
+      const { email } = this.request.params
+      const result = await this.service.getByEmail(email)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)

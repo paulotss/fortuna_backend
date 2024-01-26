@@ -4,11 +4,11 @@ import type IInvoice from '../interfaces/IInvoice'
 import { type PrismaClient } from '@prisma/client'
 import prisma from '../utils/prisma'
 import Client from '../domains/user/Client'
-import Seller from '../domains/user/Seller'
 import Cashier from '../domains/Cashier'
 import CustomError from '../utils/CustomError'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
+import User from '../domains/user/User'
 
 class InvoiceService {
   private readonly prisma: PrismaClient
@@ -66,7 +66,7 @@ class InvoiceService {
       },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
-        seller: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { branch: true, level: true } },
         cashier: true
       }
     })
@@ -88,24 +88,24 @@ class InvoiceService {
           title: invoice.client.user.level.title,
           acronym: invoice.client.user.level.acronym
         }),
-        cpf: invoice.client.cpf,
-        balance: invoice.client.balance
+        balance: invoice.client.balance,
+        admin: invoice.client.user.admin
       }),
-      seller: new Seller({
+      seller: new User({
         id: invoice.seller.id,
-        name: invoice.seller.user.name,
-        cellPhone: invoice.seller.user.cellPhone,
-        email: invoice.seller.user.email,
+        name: invoice.seller.name,
+        cellPhone: invoice.seller.cellPhone,
+        email: invoice.seller.email,
         branch: new Branch({
-          id: invoice.seller.user.branch.id,
-          title: invoice.seller.user.branch.title
+          id: invoice.seller.branch.id,
+          title: invoice.seller.branch.title
         }),
         level: new Level({
-          id: invoice.seller.user.level.id,
-          title: invoice.seller.user.level.title,
-          acronym: invoice.seller.user.level.acronym
+          id: invoice.seller.level.id,
+          title: invoice.seller.level.title,
+          acronym: invoice.seller.level.acronym
         }),
-        createdAt: invoice.seller.createdAt
+        admin: invoice.seller.admin
       }),
       cashier: new Cashier({
         id: invoice.cashier.id,
@@ -123,7 +123,7 @@ class InvoiceService {
       },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
-        seller: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { branch: true, level: true } },
         cashier: true
       }
     })
@@ -145,24 +145,24 @@ class InvoiceService {
           title: invoice.client.user.level.title,
           acronym: invoice.client.user.level.acronym
         }),
-        cpf: invoice.client.cpf,
-        balance: invoice.client.balance
+        balance: invoice.client.balance,
+        admin: invoice.client.user.admin
       }),
-      seller: new Seller({
+      seller: new User({
         id: invoice.seller.id,
-        name: invoice.seller.user.name,
-        cellPhone: invoice.seller.user.cellPhone,
-        email: invoice.seller.user.email,
+        name: invoice.seller.name,
+        cellPhone: invoice.seller.cellPhone,
+        email: invoice.seller.email,
         branch: new Branch({
-          id: invoice.seller.user.branch.id,
-          title: invoice.seller.user.branch.title
+          id: invoice.seller.branch.id,
+          title: invoice.seller.branch.title
         }),
         level: new Level({
-          id: invoice.seller.user.level.id,
-          title: invoice.seller.user.level.title,
-          acronym: invoice.seller.user.level.acronym
+          id: invoice.seller.level.id,
+          title: invoice.seller.level.title,
+          acronym: invoice.seller.level.acronym
         }),
-        createdAt: invoice.seller.createdAt
+        admin: invoice.seller.admin
       }),
       cashier: new Cashier({
         id: invoice.cashier.id,
@@ -177,7 +177,7 @@ class InvoiceService {
       where: { id: invoiceId },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
-        seller: { include: { user: { include: { branch: true, level: true } } } },
+        seller: { include: { branch: true, level: true } },
         cashier: true,
         products: { include: { product: true } }
       }
@@ -201,24 +201,24 @@ class InvoiceService {
           title: invoiceModel.client.user.level.title,
           acronym: invoiceModel.client.user.level.acronym
         }),
-        cpf: invoiceModel.client.cpf,
-        balance: invoiceModel.client.balance
+        balance: invoiceModel.client.balance,
+        admin: invoiceModel.client.user.admin
       }),
-      seller: new Seller({
+      seller: new User({
         id: invoiceModel.seller.id,
-        name: invoiceModel.seller.user.name,
-        cellPhone: invoiceModel.seller.user.cellPhone,
-        email: invoiceModel.seller.user.email,
+        name: invoiceModel.seller.name,
+        cellPhone: invoiceModel.seller.cellPhone,
+        email: invoiceModel.seller.email,
         branch: new Branch({
-          id: invoiceModel.seller.user.branch.id,
-          title: invoiceModel.seller.user.branch.title
+          id: invoiceModel.seller.branch.id,
+          title: invoiceModel.seller.branch.title
         }),
         level: new Level({
-          id: invoiceModel.seller.user.level.id,
-          title: invoiceModel.seller.user.level.title,
-          acronym: invoiceModel.seller.user.level.acronym
+          id: invoiceModel.seller.level.id,
+          title: invoiceModel.seller.level.title,
+          acronym: invoiceModel.seller.level.acronym
         }),
-        createdAt: invoiceModel.seller.createdAt
+        admin: invoiceModel.seller.admin
       }),
       cashier: new Cashier({
         id: invoiceModel.cashier.id,
@@ -252,8 +252,8 @@ class InvoiceService {
           name: itp.invoice.client.user.name,
           cellPhone: itp.invoice.client.user.cellPhone,
           email: itp.invoice.client.user.email,
-          cpf: itp.invoice.client.cpf,
-          balance: itp.invoice.client.balance
+          balance: itp.invoice.client.balance,
+          admin: itp.invoice.client.user.admin
         })
       }
     ))

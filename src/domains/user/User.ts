@@ -1,26 +1,29 @@
 import type IUser from '../../interfaces/IUser'
 import type Branch from '../Branch'
 import type Level from '../Level'
+import Role from '../Role'
 
 class User {
   private id: number | undefined
   private name: string
-  private code?: string
   private password?: string
   private cellPhone: string
   private email: string
   private branch?: Branch
   private level?: Level
+  private role?: Role
+  private admin: boolean
 
   constructor (user: IUser) {
     this.id = user.id
     this.name = user.name
-    this.code = user.code
     this.password = user.password
     this.cellPhone = user.cellPhone
     this.email = user.email
     this.branch = user.branch
     this.level = user.level
+    this.role = user.role
+    this.admin = user.admin
   }
 
   public getId (): number | undefined {
@@ -37,14 +40,6 @@ class User {
 
   public setName (name: string): void {
     this.name = name
-  }
-
-  public getCode (): string | undefined {
-    return this.code
-  }
-
-  public setCode (code: string): void {
-    this.code = code
   }
 
   public getPassword (): string | undefined {
@@ -85,6 +80,22 @@ class User {
 
   public setLevel (level: Level): void {
     this.level = level
+  }
+
+  public getRole (): Role | undefined {
+    return this.role
+  }
+
+  public setRole (role: Role): void {
+    this.role = role
+  }
+
+  public getAdmin (): boolean {
+    return this.admin
+  }
+
+  public setAdmin (admin: boolean): void {
+    this.admin = admin
   }
 }
 

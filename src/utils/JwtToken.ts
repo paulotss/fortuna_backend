@@ -6,6 +6,25 @@ export interface JwtPayloadType {
   accessLevel: number
 }
 
+export interface JwtPayloadAdminType {
+  id: number
+  name: string
+  roleId: number
+}
+
+export interface JwtPayloadClientType {
+  id: number
+  name: string
+  roleId: number
+}
+
+export interface JwtPayloadRoleType {
+  id: number
+  name: string,
+  roleId: number,
+  cashierId: number
+}
+
 class JwtToken {
   private readonly privateKey: string
 
@@ -15,6 +34,24 @@ class JwtToken {
   }
 
   public generateToken (payload: JwtPayloadType): string {
+    return jwt.sign({ payload }, this.privateKey, {
+      expiresIn: '1d'
+    })
+  }
+
+  public generateTokenAdmin (payload: JwtPayloadAdminType): string {
+    return jwt.sign({ payload }, this.privateKey, {
+      expiresIn: '1d'
+    })
+  }
+
+  public generateTokenClient (payload: JwtPayloadClientType): string {
+    return jwt.sign({ payload }, this.privateKey, {
+      expiresIn: '1d'
+    })
+  }
+
+  public generateTokenRole (payload: JwtPayloadRoleType): string {
     return jwt.sign({ payload }, this.privateKey, {
       expiresIn: '1d'
     })

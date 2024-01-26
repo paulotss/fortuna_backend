@@ -2,10 +2,19 @@ import { type Decimal } from '@prisma/client/runtime/library'
 import type IInvoice from './IInvoice'
 import type Client from '../domains/user/Client'
 import type Product from '../domains/Product'
+import Cashier from '../domains/Cashier'
+import Role from '../domains/Role'
 
 export interface RequestLoginType {
-  code: string
+  email: string
   password: string
+}
+
+export interface RequestLoginRoleType {
+  email: string
+  password: string
+  roleId: number
+  cashierId: number
 }
 
 export interface IInvoiceCreateRequest extends IInvoice {
@@ -38,10 +47,17 @@ export interface IClientCreateRequest {
   email: string
   branchId: number
   levelId: number
-  cpf: string
-  code?: string
   password?: string
   balance?: number
+}
+
+export interface IProductCreateRequest {
+  title: string
+  description: string
+  price: Decimal
+  amount: number
+  barCode: string
+  supplierId: number
 }
 
 export interface IExpenseCreateRequest {
@@ -105,4 +121,16 @@ export interface IProductToInvoicesResponse {
   amount: number
   value: Decimal
   product: Product
+}
+
+export interface IRoleUserResponse {
+  userId: number
+  role: Role
+  cashier: Cashier
+}
+
+export interface IRoleUser {
+  userId: number
+  roleId: number
+  cashierId: number
 }

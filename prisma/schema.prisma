@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -12,25 +12,43 @@ datasource db {
 }
 
 model Cashier {
-  id      Int       @id @default(autoincrement())
-  title   String    @db.VarChar(255)
+  id      Int           @id @default(autoincrement())
+  title   String        @db.VarChar(255)
+  users   UserHasRole[]
   invoice Invoice[]
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(255)
-  code      String    @db.VarChar(45)
-  password  String    @db.VarChar(45)
-  cellPhone String    @db.VarChar(45)
-  email     String    @db.VarChar(45)
-  branch    Branch    @relation(fields: [branchId], references: [id])
+  id        Int           @id @default(autoincrement())
+  name      String        @db.VarChar(255)
+  password  String        @db.VarChar(45)
+  cellPhone String        @db.VarChar(45)
+  email     String        @unique @db.VarChar(45)
+  admin     Boolean
+  branch    Branch        @relation(fields: [branchId], references: [id])
   branchId  Int
-  level     Level     @relation(fields: [levelId], references: [id])
+  level     Level         @relation(fields: [levelId], references: [id])
   levelId   Int
-  Client    Client[]
-  Manager   Manager[]
-  Seller    Seller[]
+  invoice   Invoice[]
+  roles     UserHasRole[]
+  client    Client[]
+}
+
+model Role {
+  id    Int           @id @default(autoincrement())
+  title String        @db.VarChar(255)
+  users UserHasRole[]
+}
+
+model UserHasRole {
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  role      Role    @relation(fields: [roleId], references: [id])
+  roleId    Int
+  cashier   Cashier @relation(fields: [cashierId], references: [id])
+  cashierId Int
+
+  @@id([userId, roleId, cashierId])
 }
 
 model Branch {
@@ -65,20 +83,28 @@ model Loss {
 }
 
 model Product {
-  id      Int                @id @default(autoincrement())
-  title   String             @db.VarChar(255)
-  price   Decimal            @db.Decimal(10, 2)
-  amount  Int
-  barCode String             @db.VarChar(45)
-  invoice InvoiceToProduct[]
-  Expense Expense[]
-  Loss    Loss[]
+  id          Int                @id @default(autoincrement())
+  title       String             @db.VarChar(255)
+  description String             @db.Text()
+  price       Decimal            @db.Decimal(10, 2)
+  amount      Int
+  barCode     String             @db.VarChar(45)
+  supplier    Supplier           @relation(fields: [supplierId], references: [id])
+  supplierId  Int
+  invoice     InvoiceToProduct[]
+  expense     Expense[]
+  loss        Loss[]
+}
+
+model Supplier {
+  id       Int       @id @default(autoincrement())
+  name     String    @db.VarChar(255)
+  products Product[]
 }
 
 model Client {
   id        Int        @id @default(autoincrement())
   createdAt DateTime   @default(now())
-  cpf       String     @db.VarChar(11)
   balance   Decimal    @db.Decimal(10, 2)
   user      User       @relation(fields: [userId], references: [id])
   userId    Int
@@ -90,7 +116,7 @@ model Receipts {
   id        Int      @id @default(autoincrement())
   amount    Decimal  @db.Decimal(10, 2)
   createdAt DateTime @default(now())
-  Client    Client   @relation(fields: [clientId], references: [id])
+  client    Client   @relation(fields: [clientId], references: [id])
   clientId  Int
   method    Method   @relation(fields: [methodId], references: [id])
   methodId  Int
@@ -99,22 +125,7 @@ model Receipts {
 model Method {
   id       Int        @id @default(autoincrement())
   title    String     @db.VarChar(45)
-  Receipts Receipts[]
-}
-
-model Manager {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-}
-
-model Seller {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int
-  invoice   Invoice[]
+  receipts Receipts[]
 }
 
 model Invoice {
@@ -123,7 +134,7 @@ model Invoice {
   saleDate  DateTime
   cashier   Cashier            @relation(fields: [cashierId], references: [id])
   cashierId Int
-  seller    Seller             @relation(fields: [sellerId], references: [id])
+  seller    User               @relation(fields: [sellerId], references: [id])
   sellerId  Int
   client    Client             @relation(fields: [clientId], references: [id])
   clientId  Int

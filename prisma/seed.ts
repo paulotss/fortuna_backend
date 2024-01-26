@@ -87,28 +87,60 @@ async function main (): Promise<void> {
     update: {},
     create: {
       name: 'Paulo de Tarso',
-      code: '0001',
       password: '123456',
       email: 'paulo.oinab@gmail.com',
       cellPhone: '61988585218',
       branchId: 55,
-      levelId: 1
+      levelId: 1,
+      admin: true,
     }
   })
 
-  const seller1 = await prisma.seller.upsert({
+  const role1 = await prisma.role.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      userId: 1
+      title: 'Gerente'
     }
   })
 
-  const manager1 = await prisma.manager.upsert({
+  const role2 = await prisma.role.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      title: 'Supervisor'
+    }
+  })
+
+  const role3 = await prisma.role.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      title: 'Vendedor'
+    }
+  })
+
+  const role4 = await prisma.role.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      title: 'Operador'
+    }
+  })
+
+  const cashier1 = await prisma.cashier.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      userId: 1
+      title: 'Café Sophia'
+    }
+  })
+
+  const userHasRole = await prisma.userHasRole.create({
+    data: {
+      userId: 1,
+      roleId: 1,
+      cashierId: 1
     }
   })
 
@@ -117,7 +149,6 @@ async function main (): Promise<void> {
     update: {},
     create: {
       userId: 1,
-      cpf: '01810755123',
       balance: 100
     }
   })
@@ -154,11 +185,11 @@ async function main (): Promise<void> {
     }
   })
 
-  const cashier1 = await prisma.cashier.upsert({
+  const supplier1 = await prisma.supplier.upsert({
     where: { id: 1 },
     update: {},
     create: {
-      title: 'Café Sophia'
+      name: 'Mercado'
     }
   })
 
@@ -167,9 +198,11 @@ async function main (): Promise<void> {
     update: {},
     create: {
       title: 'Cerveja Heneiken',
+      description: 'Melhor cerveja',
       price: 8,
       amount: 50,
-      barCode: '7896045506873'
+      barCode: '7896045506873',
+      supplierId: 1
     }
   })
 
@@ -178,9 +211,11 @@ async function main (): Promise<void> {
     update: {},
     create: {
       title: 'Cerveja Original',
+      description: 'Melhor cerveja',
       price: 7,
       amount: 50,
-      barCode: '7891991015493'
+      barCode: '7891991015493',
+      supplierId: 1
     }
   })
 
@@ -189,9 +224,11 @@ async function main (): Promise<void> {
     update: {},
     create: {
       title: 'Cerveja Spaten',
+      description: 'Melhor cerveja',
       price: 7,
       amount: 50,
-      barCode: '7891991297424'
+      barCode: '7891991297424',
+      supplierId: 1
     }
   })
 
@@ -199,15 +236,18 @@ async function main (): Promise<void> {
     branchs,
     level1,
     level2,
+    role1,
+    role2,
+    role3,
+    role4,
     user1,
-    seller1,
-    manager1,
     client1,
     method1,
     method2,
     method3,
     method4,
     cashier1,
+    supplier1,
     product1,
     product2,
     product3

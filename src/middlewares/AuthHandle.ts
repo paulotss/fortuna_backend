@@ -17,52 +17,33 @@ class AuthHandle {
     const { authorization } = this.request.headers
     if (authorization === undefined) throw new Error()
     const jwt = new JwtToken()
-    const payload = await jwt.getPayload(authorization)
+    const {payload} = await jwt.getPayload(authorization)
     return payload
   }
 
   public async authVerifyAcessLevel (accessLevel: number[]): Promise<Response | null> {
     try {
       const payload = await this.getPayload()
-      if (accessLevel.some((a) => a === payload.accessLevel)) throw new Error()
+      if (!accessLevel.some((a) => a === payload.roleId)) throw new Error()
+      this.response.locals.jwt = payload
       this.next()
       return null
     } catch (error) {
-      return this.response.sendStatus(403)
+      const payload = await this.getPayload()
+      return this.response.status(403).json(payload)
     }
   }
 
   public async authVerifyClient (id: number): Promise<Response | null> {
     try {
       const payload = await this.getPayload()
-      if (payload.accessLevel === 2) {
-        if (id !== payload.id) throw new Error()
-      }
+      if (id !== payload.id) throw new Error()
       this.next()
       return null
     } catch (error) {
       return this.response.sendStatus(403)
     }
   }
-
-  // public async authVerify (
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<Response | null> {
-  //   try {
-  //     const { authorization } = req.headers
-  //     if (authorization === undefined) throw new Error()
-  //     const jwt = new JwtToken()
-  //     const payload = await jwt.getPayload(authorization)
-  //     if (this.accessLevel.some((a) => a === payload.accessLevel)) throw new Error()
-  //     res.locals.jwt = payload
-  //     next()
-  //     return null
-  //   } catch (error) {
-  //     return res.sendStatus(403)
-  //   }
-  // }
 }
 
 export default AuthHandle
