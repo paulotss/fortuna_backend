@@ -11,6 +11,7 @@ import lossRouter from './routes/loss.route'
 import receiptRouter from './routes/receipt.route'
 import methodRouter from './routes/method.route'
 import roleRouter from './routes/role.route'
+import supplierRouter from './routes/supplier.route'
 import ErrorHandle from './middlewares/ErrorHandle'
 import cors from 'cors'
 
@@ -31,6 +32,7 @@ app.use(lossRouter)
 app.use(receiptRouter)
 app.use(methodRouter)
 app.use(roleRouter)
+app.use(supplierRouter)
 
 app.use(ErrorHandle.handle)
 

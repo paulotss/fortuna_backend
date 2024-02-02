@@ -4,6 +4,8 @@ import type Client from '../domains/user/Client'
 import type Product from '../domains/Product'
 import Cashier from '../domains/Cashier'
 import Role from '../domains/Role'
+import ICashier from './ICashier'
+import IProduct from './IProduct'
 
 export interface RequestLoginType {
   email: string
@@ -55,7 +57,6 @@ export interface IProductCreateRequest {
   title: string
   description: string
   price: Decimal
-  amount: number
   barCode: string
   supplierId: number
 }
@@ -133,4 +134,10 @@ export interface IRoleUser {
   userId: number
   roleId: number
   cashierId: number
+}
+
+export interface IProductAmountUpdate {
+  productId: number;
+  cashierId: number;
+  amount: number;
 }

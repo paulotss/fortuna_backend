@@ -27,7 +27,7 @@ router.get('/invoice/client/:id',
 )
 
 router.get('/invoice/product/:id',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
   (req, res, next) => new InvoiceController(req, res, next).getInvoicesOfProduct()
 )
 

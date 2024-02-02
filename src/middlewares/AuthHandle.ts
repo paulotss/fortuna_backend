@@ -29,15 +29,14 @@ class AuthHandle {
       this.next()
       return null
     } catch (error) {
-      const payload = await this.getPayload()
-      return this.response.status(403).json(payload)
+      return this.response.sendStatus(403)
     }
   }
 
   public async authVerifyClient (id: number): Promise<Response | null> {
     try {
       const payload = await this.getPayload()
-      if (id !== payload.id) throw new Error()
+      if (id !== payload.id && payload.roleId === 5) throw new Error()
       this.next()
       return null
     } catch (error) {

@@ -12,10 +12,11 @@ datasource db {
 }
 
 model Cashier {
-  id      Int           @id @default(autoincrement())
-  title   String        @db.VarChar(255)
-  users   UserHasRole[]
-  invoice Invoice[]
+  id       Int                   @id @default(autoincrement())
+  title    String                @db.VarChar(255)
+  users    UserHasRole[]
+  invoice  Invoice[]
+  products ProducstHasCashiers[]
 }
 
 model User {
@@ -83,17 +84,27 @@ model Loss {
 }
 
 model Product {
-  id          Int                @id @default(autoincrement())
-  title       String             @db.VarChar(255)
-  description String             @db.Text()
-  price       Decimal            @db.Decimal(10, 2)
-  amount      Int
-  barCode     String             @db.VarChar(45)
-  supplier    Supplier           @relation(fields: [supplierId], references: [id])
+  id          Int                   @id @default(autoincrement())
+  title       String                @db.VarChar(255)
+  description String                @db.Text()
+  price       Decimal               @db.Decimal(10, 2)
+  barCode     String                @db.VarChar(45)
+  supplier    Supplier              @relation(fields: [supplierId], references: [id])
   supplierId  Int
   invoice     InvoiceToProduct[]
   expense     Expense[]
   loss        Loss[]
+  cashiers    ProducstHasCashiers[]
+}
+
+model ProducstHasCashiers {
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  cashier   Cashier @relation(fields: [cashierId], references: [id])
+  cashierId Int
+  amount    Int
+
+  @@id([productId, cashierId])
 }
 
 model Supplier {

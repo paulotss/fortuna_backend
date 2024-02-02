@@ -27,7 +27,7 @@ router.put('/client/passchange',
 )
 
 router.get('/clients',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3]),
   (req, res, next) => new ClientController(req, res, next).getAll()
 )
 
@@ -47,7 +47,7 @@ router.get('/client/search/id/:id',
 )
 
 router.put('/client',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3]),
   (req, res, next) => new ClientController(req, res, next).updateUniqueInput()
 )
 

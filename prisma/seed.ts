@@ -136,6 +136,14 @@ async function main (): Promise<void> {
     }
   })
 
+  const cashier2 = await prisma.cashier.upsert({
+    where: { id: 2 },
+    update: {},
+    create: {
+      title: 'Mundo de Sophia'
+    }
+  })
+
   const userHasRole = await prisma.userHasRole.create({
     data: {
       userId: 1,
@@ -200,9 +208,8 @@ async function main (): Promise<void> {
       title: 'Cerveja Heneiken',
       description: 'Melhor cerveja',
       price: 8,
-      amount: 50,
       barCode: '7896045506873',
-      supplierId: 1
+      supplierId: 1,
     }
   })
 
@@ -213,9 +220,8 @@ async function main (): Promise<void> {
       title: 'Cerveja Original',
       description: 'Melhor cerveja',
       price: 7,
-      amount: 50,
       barCode: '7891991015493',
-      supplierId: 1
+      supplierId: 1,
     }
   })
 
@@ -226,9 +232,24 @@ async function main (): Promise<void> {
       title: 'Cerveja Spaten',
       description: 'Melhor cerveja',
       price: 7,
-      amount: 50,
       barCode: '7891991297424',
-      supplierId: 1
+      supplierId: 1,
+    }
+  })
+
+  const productsHasCashiers1 = await prisma.producstHasCashiers.create({
+    data: {
+      productId: 1,
+      cashierId: 1,
+      amount: 50,
+    }
+  })
+
+  const productsHasCashiers2 = await prisma.producstHasCashiers.create({
+    data: {
+      productId: 1,
+      cashierId: 2,
+      amount: 100,
     }
   })
 
@@ -241,16 +262,20 @@ async function main (): Promise<void> {
     role3,
     role4,
     user1,
+    userHasRole,
     client1,
     method1,
     method2,
     method3,
     method4,
     cashier1,
+    cashier2,
     supplier1,
     product1,
     product2,
-    product3
+    product3,
+    productsHasCashiers1,
+    productsHasCashiers2
   })
 }
 

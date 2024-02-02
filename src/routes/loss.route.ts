@@ -7,12 +7,12 @@ import AuthHandle from '../middlewares/AuthHandle'
 const router = Router()
 
 router.post('/loss',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
   (req, res, next) => new LossController(req, res, next).createOne()
 )
 
 router.get('/loss/report',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1]),
   (req, res, next) => new LossController(req, res, next).getByCreateAt()
 )
 

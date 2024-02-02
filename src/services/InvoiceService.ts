@@ -41,8 +41,8 @@ class InvoiceService {
       }
     })
     for (let i = 0; i < invoice.products.length; i += 1) {
-      await this.prisma.product.update({
-        where: { id: invoice.products[i].id },
+      await this.prisma.producstHasCashiers.update({
+        where: { productId_cashierId: { productId: invoice.products[i].id, cashierId: invoice.cashierId }  },
         data: { amount: { decrement: invoice.products[i].amount } }
       })
     }
