@@ -16,6 +16,7 @@ model Cashier {
   title    String                @db.VarChar(255)
   users    UserHasRole[]
   invoice  Invoice[]
+  cart     Cart[]
   products ProducstHasCashiers[]
 }
 
@@ -95,6 +96,7 @@ model Product {
   expense     Expense[]
   loss        Loss[]
   cashiers    ProducstHasCashiers[]
+  carts       CartHasProducts[]
 }
 
 model ProducstHasCashiers {
@@ -121,6 +123,7 @@ model Client {
   userId    Int
   invoice   Invoice[]
   receipts  Receipts[]
+  cart      Cart[]
 }
 
 model Receipts {
@@ -161,4 +164,24 @@ model InvoiceToProduct {
   amount    Int
 
   @@id([productId, invoiceId])
+}
+
+model Cart {
+  id        Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now())
+  status    Boolean
+  products  CartHasProducts[]
+  client    Client            @relation(fields: [clientId], references: [id])
+  clientId  Int
+  cashier   Cashier           @relation(fields: [cashierId], references: [id])
+  cashierId Int
+}
+
+model CartHasProducts {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  cartId    Int
+  amount    Int
 }

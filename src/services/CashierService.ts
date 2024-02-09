@@ -46,6 +46,28 @@ class CashierService {
     const product = this.createDomain(cashierModel)
     return product
   }
+
+  public async getAllWithProducts (): Promise<Cashier[]> {
+    const cashiersModel = await this.prisma.cashier.findMany({
+      include: { products: { include: { product: true } } }
+    })
+    const cashiers = cashiersModel.map((cashier) => (
+      this.createDomain({
+        id: cashier.id,
+        title: cashier.title,
+        products: cashier.products.map((pc) => ({
+          id: pc.product.id,
+          title: pc.product.title,
+          description: pc.product.description,
+          price: pc.product.price,
+          barCode: pc.product.barCode,
+          amount: pc.amount,
+          supplierId: pc.product.supplierId
+        }))
+      })
+    ))
+    return cashiers
+  }
 }
 
 export default CashierService

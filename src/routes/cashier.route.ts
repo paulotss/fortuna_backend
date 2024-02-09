@@ -10,6 +10,11 @@ router.get('/cashier',
   (req, res, next) => new CashierController(req, res, next).getAll()
 )
 
+router.get('/cashiers/products',
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4, 5]),
+  (req, res, next) => new CashierController(req, res, next).getAllWithProducts()
+)
+
 router.get('/cashier/:id',
   (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4]),
   (req, res, next) => new CashierController(req, res, next).getById()

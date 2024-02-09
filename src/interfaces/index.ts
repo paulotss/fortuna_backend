@@ -141,3 +141,9 @@ export interface IProductAmountUpdate {
   cashierId: number;
   amount: number;
 }
+
+export default interface ICartCreateRequest {
+  clientId: number
+  cashierId: number
+  productsIds: { id: number, amount: number }[]
+}

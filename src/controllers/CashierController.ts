@@ -52,6 +52,15 @@ class CashierController {
       this.next(error)
     }
   }
+
+  public async getAllWithProducts (): Promise<void> {
+    try {
+      const result = await this.service.getAllWithProducts()
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
 }
 
 export default CashierController

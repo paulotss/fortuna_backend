@@ -10,6 +10,7 @@ interface IProduct {
   price: Decimal
   barCode: string
   amount?: number
+  amountCheckout?: number
   supplierId: number
   supplier?: ISupplier
   invoices?: IInvoice[]

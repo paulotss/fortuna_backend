@@ -12,6 +12,7 @@ import receiptRouter from './routes/receipt.route'
 import methodRouter from './routes/method.route'
 import roleRouter from './routes/role.route'
 import supplierRouter from './routes/supplier.route'
+import cartRouter from './routes/cart.route'
 import ErrorHandle from './middlewares/ErrorHandle'
 import cors from 'cors'
 
@@ -33,6 +34,7 @@ app.use(receiptRouter)
 app.use(methodRouter)
 app.use(roleRouter)
 app.use(supplierRouter)
+app.use(cartRouter)
 
 app.use(ErrorHandle.handle)
 
