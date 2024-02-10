@@ -20,7 +20,7 @@ class UserService {
   }
 
   public async loginRole (payload: RequestLoginRoleType): Promise<string> {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
           email: payload.email,
           password: payload.password,
@@ -41,7 +41,7 @@ class UserService {
   }
 
   public async loginAdmin (payload: RequestLoginType): Promise<string> {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: {
           email: payload.email,
           password: payload.password,
