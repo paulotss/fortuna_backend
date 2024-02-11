@@ -68,7 +68,8 @@ class InvoiceService {
         client: { include: { user: { include: { branch: true, level: true } } } },
         seller: { include: { branch: true, level: true } },
         cashier: true
-      }
+      },
+      orderBy: { saleDate: 'desc' }
     })
     const invoices = invoicesModels.map((invoice) => this.createDomain({
       id: invoice.id,

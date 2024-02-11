@@ -12,7 +12,7 @@ router.post('/cart',
 )
 
 router.put('/cart/status',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4]),
+  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2, 3, 4, 5]),
   (req, res, next) => new CartController(req, res, next).finishStatus()
 )
 
