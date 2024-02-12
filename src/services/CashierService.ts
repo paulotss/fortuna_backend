@@ -49,7 +49,12 @@ class CashierService {
 
   public async getAllWithProducts (): Promise<Cashier[]> {
     const cashiersModel = await this.prisma.cashier.findMany({
-      include: { products: { include: { product: true } } }
+      include: { 
+        products: {
+          include: { product: true },
+          orderBy: { product: { title: 'asc' } }
+        }
+      }
     })
     const cashiers = cashiersModel.map((cashier) => (
       this.createDomain({

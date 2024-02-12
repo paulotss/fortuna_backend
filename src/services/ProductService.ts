@@ -20,7 +20,8 @@ class ProductService {
   public async getAll (title?: string): Promise<Product[]> {
     const productModel = await this.prisma.product.findMany({
       where: { title: { contains: title } },
-      include: { supplier: true }
+      include: { supplier: true },
+      orderBy: { title: 'asc' }
     })
     const products = productModel.map((p) => this.createDomain(p))
     return products

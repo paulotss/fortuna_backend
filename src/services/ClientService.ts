@@ -177,7 +177,8 @@ class ClientService extends UserService {
 
   public async getAll (): Promise<User[]> {
     const clientsModels = await this.prisma.client.findMany({
-      include: { user: { include: { branch: true, level: true } } }
+      include: { user: { include: { branch: true, level: true } } },
+      orderBy: { user: { name: 'asc' } }
     })
     const clients: User[] = clientsModels.map((client) => {
       return this.createDomain({
