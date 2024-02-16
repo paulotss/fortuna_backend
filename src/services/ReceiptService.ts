@@ -3,6 +3,7 @@ import prisma from '../utils/prisma'
 import type IReceipt from '../interfaces/IReceipt'
 import Receipt from '../domains/Receipt'
 import { type IReceiptMethodRequest, type IReceiptCreateRequest } from '../interfaces'
+import convertDateToUTC from '../utils/convertDateToUTC'
 
 class ReceiptService {
   private readonly prisma: PrismaClient
@@ -31,7 +32,10 @@ class ReceiptService {
     const receiptModel = await this.prisma.receipts.findMany({
       where: {
         method: { id: request.methodId },
-        createdAt: { gte: request.startDate, lte: request.endDate }
+        createdAt: {
+          gte: convertDateToUTC(new Date(request.startDate)),
+          lte: convertDateToUTC(new Date(request.endDate))
+        }
       }
     })
     const receipts = receiptModel.map((receipt) => (

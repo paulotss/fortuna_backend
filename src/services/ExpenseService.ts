@@ -4,6 +4,7 @@ import type IExpense from '../interfaces/IExpense'
 import prisma from '../utils/prisma'
 import { type IExpenseLaunchDateRequest, type IExpenseCreateRequest } from '../interfaces'
 import Product from '../domains/Product'
+import convertDateToUTC from '../utils/convertDateToUTC'
 
 class ExpenseService {
   private readonly prisma: PrismaClient
@@ -29,7 +30,10 @@ class ExpenseService {
 
   public async getByLaunchDate (request: IExpenseLaunchDateRequest): Promise<Expense[]> {
     const expensesModel = await this.prisma.expense.findMany({
-      where: { launchDate: { gte: request.startDate, lte: request.endDate } },
+      where: { launchDate: {
+        gte: convertDateToUTC(new Date(request.startDate)),
+        lte: convertDateToUTC(new Date(request.endDate))
+      }},
       include: { product: true }
     })
     const expenses = expensesModel.map((expense) => (

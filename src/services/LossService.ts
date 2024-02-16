@@ -4,6 +4,7 @@ import type ILoss from '../interfaces/ILoss'
 import prisma from '../utils/prisma'
 import { type ILossCreateAtRequest, type ILossCreateRequest } from '../interfaces'
 import Product from '../domains/Product'
+import convertDateToUTC from '../utils/convertDateToUTC'
 
 class LossService {
   private readonly prisma: PrismaClient
@@ -31,7 +32,10 @@ class LossService {
 
   public async getByCreateAt (request: ILossCreateAtRequest): Promise<Loss[]> {
     const lossesModel = await this.prisma.loss.findMany({
-      where: { createAt: { gte: request.startDate, lte: request.endDate } },
+      where: { createAt: {
+        gte: convertDateToUTC(new Date(request.startDate)),
+        lte: convertDateToUTC(new Date(request.endDate))
+      }},
       include: { product: true }
     })
     const losses = lossesModel.map((loss) => (

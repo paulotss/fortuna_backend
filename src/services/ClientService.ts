@@ -9,6 +9,7 @@ import Level from '../domains/Level'
 import JwtToken, { type JwtPayloadClientType } from '../utils/JwtToken'
 import Invoice from '../domains/Invoice'
 import Cashier from '../domains/Cashier'
+import convertDateToUTC from '../utils/convertDateToUTC'
 
 class ClientService extends UserService {
 
@@ -208,7 +209,10 @@ class ClientService extends UserService {
       where: { id: request.clientId },
       include: {
         invoice: {
-          where: { saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) } },
+          where: { saleDate: {
+            gte: convertDateToUTC(new Date(request.startDate)),
+            lte: convertDateToUTC(new Date(request.endDate))
+          }},
           take: request.limit,
           include: { cashier: true }
         },

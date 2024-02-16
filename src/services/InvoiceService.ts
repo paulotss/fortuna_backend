@@ -9,6 +9,7 @@ import CustomError from '../utils/CustomError'
 import Branch from '../domains/Branch'
 import Level from '../domains/Level'
 import User from '../domains/user/User'
+import convertDateToUTC from '../utils/convertDateToUTC'
 
 class InvoiceService {
   private readonly prisma: PrismaClient
@@ -62,7 +63,10 @@ class InvoiceService {
     const invoicesModels = await this.prisma.invoice.findMany({
       where: {
         cashier: request.cashierId !== 0 ? { id: request.cashierId } : { id: { gt: 0 } },
-        saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) }
+        saleDate: {
+          gte: convertDateToUTC(new Date(request.startDate)),
+          lte: convertDateToUTC(new Date(request.endDate))
+        }
       },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
@@ -120,7 +124,10 @@ class InvoiceService {
     const invoicesModels = await this.prisma.invoice.findMany({
       where: {
         client: { id: request.clientId },
-        saleDate: { gte: new Date(request.startDate), lte: new Date(request.endDate) }
+        saleDate: {
+          gte: convertDateToUTC(new Date(request.startDate)),
+          lte: convertDateToUTC(new Date(request.endDate))
+        }
       },
       include: {
         client: { include: { user: { include: { branch: true, level: true } } } },
@@ -235,8 +242,8 @@ class InvoiceService {
         productId: request.productId,
         invoice: {
           saleDate: {
-            gte: request.startDate,
-            lte: request.endDate
+            gte: convertDateToUTC(new Date(request.startDate)),
+            lte: convertDateToUTC(new Date(request.endDate))
           }
         }
       },
