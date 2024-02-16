@@ -65,7 +65,7 @@ class InvoiceService {
         cashier: request.cashierId !== 0 ? { id: request.cashierId } : { id: { gt: 0 } },
         saleDate: {
           gte: convertDateToUTC(new Date(request.startDate)),
-          lte: convertDateToUTC(new Date(request.endDate))
+          lte: convertDateToUTC(new Date(request.endDate), false)
         }
       },
       include: {
@@ -126,7 +126,7 @@ class InvoiceService {
         client: { id: request.clientId },
         saleDate: {
           gte: convertDateToUTC(new Date(request.startDate)),
-          lte: convertDateToUTC(new Date(request.endDate))
+          lte: convertDateToUTC(new Date(request.endDate), false)
         }
       },
       include: {
@@ -243,7 +243,7 @@ class InvoiceService {
         invoice: {
           saleDate: {
             gte: convertDateToUTC(new Date(request.startDate)),
-            lte: convertDateToUTC(new Date(request.endDate))
+            lte: convertDateToUTC(new Date(request.endDate), false)
           }
         }
       },

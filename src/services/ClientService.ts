@@ -211,7 +211,7 @@ class ClientService extends UserService {
         invoice: {
           where: { saleDate: {
             gte: convertDateToUTC(new Date(request.startDate)),
-            lte: convertDateToUTC(new Date(request.endDate))
+            lte: convertDateToUTC(new Date(request.endDate), false)
           }},
           take: request.limit,
           include: { cashier: true }

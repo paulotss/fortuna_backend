@@ -34,7 +34,7 @@ class ReceiptService {
         method: { id: request.methodId },
         createdAt: {
           gte: convertDateToUTC(new Date(request.startDate)),
-          lte: convertDateToUTC(new Date(request.endDate))
+          lte: convertDateToUTC(new Date(request.endDate), false)
         }
       }
     })

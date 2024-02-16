@@ -34,7 +34,7 @@ class LossService {
     const lossesModel = await this.prisma.loss.findMany({
       where: { createAt: {
         gte: convertDateToUTC(new Date(request.startDate)),
-        lte: convertDateToUTC(new Date(request.endDate))
+        lte: convertDateToUTC(new Date(request.endDate), false)
       }},
       include: { product: true }
     })

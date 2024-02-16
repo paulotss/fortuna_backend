@@ -32,7 +32,7 @@ class ExpenseService {
     const expensesModel = await this.prisma.expense.findMany({
       where: { launchDate: {
         gte: convertDateToUTC(new Date(request.startDate)),
-        lte: convertDateToUTC(new Date(request.endDate))
+        lte: convertDateToUTC(new Date(request.endDate), false)
       }},
       include: { product: true }
     })

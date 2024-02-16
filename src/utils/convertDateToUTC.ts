@@ -1,11 +1,11 @@
-function convertDateToUTC(date: Date): Date {
+function convertDateToUTC(date: Date, reset = true): Date {
   const utc = Date.UTC(
     date.getUTCFullYear(),
     date.getUTCMonth(),
     date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds()
+    reset ? 0 : 23,
+    reset ? 0 : 59,
+    reset ? 0 : 999
   )
   return new Date(utc)
 }
