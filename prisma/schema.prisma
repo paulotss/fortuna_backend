@@ -34,6 +34,7 @@ model User {
   invoice   Invoice[]
   roles     UserHasRole[]
   client    Client[]
+  receipts  Receipts[]
 }
 
 model Role {
@@ -127,13 +128,15 @@ model Client {
 }
 
 model Receipts {
-  id        Int      @id @default(autoincrement())
-  amount    Decimal  @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
-  client    Client   @relation(fields: [clientId], references: [id])
-  clientId  Int
-  method    Method   @relation(fields: [methodId], references: [id])
-  methodId  Int
+  id         Int      @id @default(autoincrement())
+  amount     Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+  client     Client   @relation(fields: [clientId], references: [id])
+  clientId   Int
+  method     Method   @relation(fields: [methodId], references: [id])
+  methodId   Int
+  operator   User     @relation(fields: [operatorId], references: [id])
+  operatorId Int      @default(1000)
 }
 
 model Method {

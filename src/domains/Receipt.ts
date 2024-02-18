@@ -2,6 +2,7 @@ import { type Decimal } from '@prisma/client/runtime/library'
 import type IReceipt from '../interfaces/IReceipt'
 import type Client from './user/Client'
 import type Method from './Method'
+import User from './user/User'
 
 class Receipt {
   private id: number | undefined
@@ -9,6 +10,7 @@ class Receipt {
   private createdAt: Date
   private client: Client | undefined
   private method: Method | undefined
+  private operator: User | undefined
 
   constructor (receipt: IReceipt) {
     this.id = receipt.id
@@ -16,6 +18,7 @@ class Receipt {
     this.createdAt = receipt.createdAt
     this.client = receipt.client
     this.method = receipt.method
+    this.operator = receipt.operator
   }
 
   public getId (): number | undefined {
@@ -56,6 +59,14 @@ class Receipt {
 
   public setMethod (method: Method): void {
     this.method = method
+  }
+
+  public getOperator (): User | undefined {
+    return this.operator
+  }
+
+  public setOperator (operator: User): void {
+    this.operator = operator
   }
 }
 

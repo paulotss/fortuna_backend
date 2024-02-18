@@ -92,6 +92,12 @@ export interface IClientInvoicesRequest {
   limit?: number
 }
 
+export interface IClientReceiptRequest {
+  clientId: number
+  startDate: Date | string
+  endDate: Date | string
+}
+
 export interface IReceiptCreateRequest {
   amount: number
   clientId: number

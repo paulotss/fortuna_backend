@@ -1,5 +1,6 @@
 import { type Request, type Response, type NextFunction } from 'express'
 import ReceiptService from '../services/ReceiptService'
+import { IClientReceiptRequest } from '../interfaces'
 
 class ReceiptController {
   private readonly request: Request
@@ -34,6 +35,32 @@ class ReceiptController {
         endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date()
       }
       const result = await this.service.getByMethod(request)
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error)
+    }
+  }
+
+  public async getById (): Promise<void> {
+    try {
+      const { id } = this.request.params
+      const result = await this.service.getById(Number(id))
+      this.response.status(200).json(result)
+    } catch (error) {
+      this.next(error);
+    }
+  }
+
+  public async getByClient (): Promise<void> {
+    try {
+      const { clientId } = this.request.params
+      const { startDate, endDate } = this.request.query
+      const receiptRequest: IClientReceiptRequest = {
+        clientId: Number(clientId),
+        startDate: typeof startDate === 'string' ? new Date(startDate.toString()) : new Date(),
+        endDate: typeof endDate === 'string' ? new Date(endDate.toString()) : new Date(),
+      }
+      const result = await this.service.getByClient(receiptRequest)
       this.response.status(200).json(result)
     } catch (error) {
       this.next(error)
