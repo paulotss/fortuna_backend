@@ -7,7 +7,6 @@ import AuthHandle from '../middlewares/AuthHandle'
 const router = Router()
 
 router.get('/level',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2]),
   (req, res, next) => new LevelController(req, res, next).getAll()
 )
 

@@ -40,12 +40,12 @@ class ClientService extends UserService {
 
   public async createOne (newClient: IClientCreateRequest): Promise<User> {
     newClient.balance = 0
-    newClient.password = '335577'
+    newClient.password = newClient.password || '335577'
 
-    const existCpf = await this.prisma.client.findFirst({
+    const existEmail = await this.prisma.client.findFirst({
       where: { user: { email: newClient.email } }
     })
-    if (existCpf !== null) throw new CustomError('Email already exist', 409)
+    if (existEmail !== null) throw new CustomError('Email already exist', 409)
 
     const clientModel = await this.prisma.client.create({
       include: { user: true },

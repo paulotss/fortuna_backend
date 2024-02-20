@@ -52,7 +52,6 @@ router.put('/client',
 )
 
 router.post('/client',
-  (req, res, next) => new AuthHandle(req, res, next).authVerifyAcessLevel([0, 1, 2]),
   (req, res, next) => new ClientController(req, res, next).createOne()
 )
 
