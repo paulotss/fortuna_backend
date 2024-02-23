@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Receipts` MODIFY `operatorId` INTEGER NOT NULL DEFAULT 1000;
+
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `photo` VARCHAR(255) NULL;

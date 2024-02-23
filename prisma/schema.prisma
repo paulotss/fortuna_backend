@@ -26,6 +26,7 @@ model User {
   password  String        @db.VarChar(45)
   cellPhone String        @db.VarChar(45)
   email     String        @unique @db.VarChar(45)
+  photo     String?       @db.VarChar(255)
   admin     Boolean
   branch    Branch        @relation(fields: [branchId], references: [id])
   branchId  Int

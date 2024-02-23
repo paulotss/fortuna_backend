@@ -10,6 +10,8 @@ import JwtToken, { type JwtPayloadClientType } from '../utils/JwtToken'
 import Invoice from '../domains/Invoice'
 import Cashier from '../domains/Cashier'
 import convertDateToUTC from '../utils/convertDateToUTC'
+import compressImage from '../utils/compressImage'
+import fs from 'fs/promises'
 
 class ClientService extends UserService {
 
@@ -47,6 +49,8 @@ class ClientService extends UserService {
     })
     if (existEmail !== null) throw new CustomError('Email already exist', 409)
 
+    if (newClient.photo) compressImage(newClient.photo)
+
     const clientModel = await this.prisma.client.create({
       include: { user: true },
       data: {
@@ -57,8 +61,9 @@ class ClientService extends UserService {
             password: newClient.password,
             email: newClient.email,
             cellPhone: newClient.cellPhone,
-            branchId: newClient.branchId,
-            levelId: newClient.levelId,
+            photo: newClient.photo,
+            branchId: Number(newClient.branchId),
+            levelId: Number(newClient.levelId),
             admin: false
           }
         }
@@ -92,6 +97,7 @@ class ClientService extends UserService {
       password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
+      photo: clientModel.user.photo,
       branch: new Branch({
         id: clientModel.user.branch.id,
         title: clientModel.user.branch.title
@@ -127,6 +133,7 @@ class ClientService extends UserService {
         password: client.user.password,
         cellPhone: client.user.cellPhone,
         email: client.user.email,
+        photo: client.user.photo,
         branch: new Branch({
           id: client.user.branch.id,
           title: client.user.branch.title
@@ -243,8 +250,48 @@ class ClientService extends UserService {
     return client
   }
 
+  public async updatePhoto (clientId: number, photo: string | undefined): Promise<User> {
+    if (photo) compressImage(photo)
+    const clientVerify = await this.prisma.client.findUnique({
+      where: { id: clientId },
+      include: { user: true },
+    });
+    if (clientVerify?.user.photo) {
+      try {
+        const path = `${process.env.ROOT_PATH || '/app'}/media/profile/${clientVerify?.user.photo}`
+        await fs.unlink(path)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    const clientModel = await this.prisma.client.update({
+      where: { id: clientId },
+      data: { user: { update: { photo } } },
+      include: { user: { include: { branch: true, level: true } } },
+    })
+    const client = this.createDomain({
+      id: clientModel.id,
+      name: clientModel.user.name,
+      cellPhone: clientModel.user.cellPhone,
+      email: clientModel.user.email,
+      photo: clientModel.user.photo,
+      branch: new Branch({
+        id: clientModel.user.branch.id,
+        title: clientModel.user.branch.title
+      }),
+      level: new Level({
+        id: clientModel.user.level.id,
+        title: clientModel.user.level.title,
+        acronym: clientModel.user.level.acronym
+      }),
+      balance: clientModel.balance,
+      admin: clientModel.user.admin
+    })
+    return client
+  }
+
   public async updateUniqueInput (request: IUniqueInputUpdate): Promise<User> {
-    const data = request.input === 'cpf' || request.input === 'balance'
+    const data = request.input === 'balance'
       ? { [request.input]: request.value }
       : { user: { update: { [request.input]: request.value } } }
     const clientModel = await this.prisma.client.update({
@@ -257,7 +304,6 @@ class ClientService extends UserService {
     const client = this.createDomain({
       id: clientModel.id,
       name: clientModel.user.name,
-      password: clientModel.user.password,
       cellPhone: clientModel.user.cellPhone,
       email: clientModel.user.email,
       branch: new Branch({

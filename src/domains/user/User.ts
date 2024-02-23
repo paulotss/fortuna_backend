@@ -9,6 +9,7 @@ class User {
   private password?: string
   private cellPhone: string
   private email: string
+  private photo?: string | null
   private branch?: Branch
   private level?: Level
   private role?: Role
@@ -20,6 +21,7 @@ class User {
     this.password = user.password
     this.cellPhone = user.cellPhone
     this.email = user.email
+    this.photo = user.photo
     this.branch = user.branch
     this.level = user.level
     this.role = user.role
@@ -64,6 +66,14 @@ class User {
 
   public setEmail (email: string): void {
     this.email = email
+  }
+
+  public getPhoto (): string | undefined | null {
+    return this.photo
+  }
+
+  public setPhoto (photo: string | undefined | null): void {
+    this.photo = photo
   }
 
   public getBranch (): Branch | undefined {

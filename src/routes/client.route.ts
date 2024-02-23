@@ -3,6 +3,7 @@
 import { Router } from 'express'
 import ClientController from '../controllers/ClientController'
 import AuthHandle from '../middlewares/AuthHandle'
+import multerStorage from '../utils/multerStorage'
 
 const router = Router()
 
@@ -52,7 +53,13 @@ router.put('/client',
 )
 
 router.post('/client',
+  multerStorage.single('photoFile'),
   (req, res, next) => new ClientController(req, res, next).createOne()
+)
+
+router.put('/client/photo',
+  multerStorage.single('photoFile'),
+  (req, res, next) => new ClientController(req, res, next).updatePhoto()
 )
 
 export default router

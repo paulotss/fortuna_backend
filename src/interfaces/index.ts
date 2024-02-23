@@ -51,6 +51,8 @@ export interface IClientCreateRequest {
   levelId: number
   password?: string
   balance?: number
+  photoFile?: File
+  photo?: string
 }
 
 export interface IProductCreateRequest {

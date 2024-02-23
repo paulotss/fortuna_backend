@@ -8,6 +8,7 @@ interface IUser {
   password?: string
   cellPhone: string
   email: string
+  photo?: string | null
   branch?: Branch
   level?: Level
   role?: Role
