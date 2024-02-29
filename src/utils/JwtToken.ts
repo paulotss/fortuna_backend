@@ -20,9 +20,10 @@ export interface JwtPayloadClientType {
 
 export interface JwtPayloadRoleType {
   id: number
-  name: string,
-  roleId: number,
+  name: string
+  roleId: number
   cashierId: number
+  cashierName: string
 }
 
 class JwtToken {
