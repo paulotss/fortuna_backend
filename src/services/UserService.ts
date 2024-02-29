@@ -34,6 +34,7 @@ class UserService {
       name: user.name,
       roleId: payload.roleId,
       cashierId: payload.cashierId,
+      cashierName: payload.cashierName
     }
     const jwt = new JwtToken()
     const token = jwt.generateTokenRole(jwtPayload)

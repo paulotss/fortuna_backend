@@ -47,7 +47,6 @@ class CartController {
   public async finishStatus (): Promise<void> {
     try {
       const { cartId } = this.request.body
-      console.log(this.request.body)
       const result = await this.service.finishStatus(Number(cartId))
       this.response.status(200).json(result)
     } catch (error) {

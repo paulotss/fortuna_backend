@@ -17,6 +17,7 @@ export interface RequestLoginRoleType {
   password: string
   roleId: number
   cashierId: number
+  cashierName: string
 }
 
 export interface IInvoiceCreateRequest extends IInvoice {
@@ -104,6 +105,7 @@ export interface IReceiptCreateRequest {
   amount: number
   clientId: number
   methodId: number
+  operatorId: number
 }
 
 export interface IReceiptMethodRequest {
