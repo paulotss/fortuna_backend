@@ -2,7 +2,6 @@ FROM node
 WORKDIR /app
 COPY . .
 RUN chown node:node /app
-RUN chmod 776 /app/media/profile
 #USER node
 EXPOSE 3001
 CMD npx prisma migrate deploy; npm run dev
