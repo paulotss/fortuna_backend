@@ -5,4 +5,4 @@ RUN chown node:node /app
 RUN chmod 776 /app/media/profile
 #USER node
 EXPOSE 3001
-CMD npx prisma migrate deploy; npx prisma generate; npm run dev
+CMD npx prisma migrate deploy; npm run dev
