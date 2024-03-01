@@ -44,10 +44,6 @@ class ClientController {
       const result = await this.service.createOne(clientRequest)
       this.response.status(200).json(result)
     } catch (error) {
-      if (this.request.file) {
-        const path = `${process.env.ROOT_PATH || '/app'}/media/profile/${this.request.file.filename}`
-        await fs.unlink(path)
-      }
       this.next(error)
     }
   }
@@ -136,10 +132,6 @@ class ClientController {
       const result = await this.service.updatePhoto(Number(clientId), photo)
       this.response.status(200).json(result)
     } catch (error) {
-      if (this.request.file) {
-        const path = `${process.env.ROOT_PATH || '/app'}/media/profile/${this.request.file.filename}`
-        await fs.unlink(path)
-      }
       this.next(error)
     }
   }

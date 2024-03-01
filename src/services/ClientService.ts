@@ -10,7 +10,6 @@ import JwtToken, { type JwtPayloadClientType } from '../utils/JwtToken'
 import Invoice from '../domains/Invoice'
 import Cashier from '../domains/Cashier'
 import convertDateToUTC from '../utils/convertDateToUTC'
-import compressImage from '../utils/compressImage'
 import fs from 'fs/promises'
 
 class ClientService extends UserService {
@@ -52,8 +51,6 @@ class ClientService extends UserService {
       where: { user: { email: newClient.email } }
     })
     if (existEmail !== null) throw new CustomError('Email already exist', 409)
-
-    if (newClient.photo) compressImage(newClient.photo)
 
     const clientModel = await this.prisma.client.create({
       include: { user: true },
@@ -255,7 +252,6 @@ class ClientService extends UserService {
   }
 
   public async updatePhoto (clientId: number, photo: string | undefined): Promise<User> {
-    if (photo) compressImage(photo)
     const clientVerify = await this.prisma.client.findUnique({
       where: { id: clientId },
       include: { user: true },
