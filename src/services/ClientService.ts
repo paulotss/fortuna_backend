@@ -10,7 +10,6 @@ import JwtToken, { type JwtPayloadClientType } from '../utils/JwtToken'
 import Invoice from '../domains/Invoice'
 import Cashier from '../domains/Cashier'
 import convertDateToUTC from '../utils/convertDateToUTC'
-import fs from 'fs/promises'
 
 class ClientService extends UserService {
 
@@ -252,18 +251,6 @@ class ClientService extends UserService {
   }
 
   public async updatePhoto (clientId: number, photo: string | undefined): Promise<User> {
-    const clientVerify = await this.prisma.client.findUnique({
-      where: { id: clientId },
-      include: { user: true },
-    });
-    if (clientVerify?.user.photo) {
-      try {
-        const path = `${process.env.ROOT_PATH || '/app'}/media/profile/${clientVerify?.user.photo}`
-        await fs.unlink(path)
-      } catch (error) {
-        console.log(error)
-      }
-    }
     const clientModel = await this.prisma.client.update({
       where: { id: clientId },
       data: { user: { update: { photo } } },
